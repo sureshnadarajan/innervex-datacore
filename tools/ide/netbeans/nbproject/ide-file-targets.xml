@@ -15,7 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project basedir=".." name="derby-IDE">
+<project basedir=".." name="innervex-datacore-IDE">
     <property name="project.dir" value="../../.."/>
     <property name="ant.script" value="${project.dir}/build.xml"/>
     <target name="debug-ij">
