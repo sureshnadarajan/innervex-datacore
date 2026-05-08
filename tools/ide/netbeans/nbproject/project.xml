@@ -30,15 +30,6 @@
             </properties>
             <folders>
                 <source-folder>
-                    <label>trunk</label>
-                    <location>${project.dir}</location>
-                </source-folder>
-                <source-folder>
-                    <label>derby</label>
-                    <location>.</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
                     <label>java/org.apache.derby.client</label>
                     <type>java</type>
                     <location>${project.dir}/java/org.apache.derby.client</location>
@@ -227,7 +218,7 @@
                 <built-to>${project.dir}/jars/sane/derbyrun.jar</built-to>
                 <built-to>${project.dir}/jars/sane/derbytools.jar</built-to>
                 <javadoc-built-to>${project.dir}/javadoc</javadoc-built-to>
-                <source-level>21</source-level>
+                <source-level>9</source-level>
             </compilation-unit>
         </java-data>
         <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
