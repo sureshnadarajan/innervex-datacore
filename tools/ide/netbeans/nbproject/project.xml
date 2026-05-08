@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to you under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>derby</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>derby</name>
+            <properties>
+                <property name="project.dir">../../..</property>
+                <property name="ant.script">${project.dir}/build.xml</property>
+            </properties>
+            <folders>
+                <source-folder>
+                    <label>trunk</label>
+                    <location>${project.dir}</location>
+                </source-folder>
+                <source-folder>
+                    <label>derby</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.client</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.client</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.commons</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.commons</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.engine</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.engine</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.optionaltools</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.optionaltools</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.runner</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.runner</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.server</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.server</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/org.apache.derby.tools</label>
+                    <type>java</type>
+                    <location>${project.dir}/java/org.apache.derby.tools</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>java/locales</label>
+                    <location>${project.dir}/java/locales</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <script>${ant.script}</script>
+                    <target>nb-buildall</target>
+                </action>
+                <action name="clean">
+                    <script>${ant.script}</script>
+                    <target>cleanalljars</target>
+                    <target>clobber</target>
+                </action>
+                <action name="javadoc">
+                    <script>${ant.script}</script>
+                    <target>javadoc</target>
+                </action>
+                <action name="test">
+                    <script>${ant.script}</script>
+                    <target>junit-core</target>
+                </action>
+                <action name="rebuild">
+                    <script>${ant.script}</script>
+                    <target>cleanalljars</target>
+                    <target>clobber</target>
+                    <target>nb-buildall</target>
+                </action>
+                <action name="debug-ij">
+                    <script>nbproject/ide-file-targets.xml</script>
+                    <target>debug-ij</target>
+                </action>
+                <action name="debug-server">
+                    <script>nbproject/ide-file-targets.xml</script>
+                    <target>debug-server</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>jar</type>
+                <location>${project.dir}/jars/sane/derby.jar</location>
+                <script>${ant.script}</script>
+                <build-target>nb-buildall</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>${project.dir}/jars/sane/derbyTesting.jar</location>
+                <script>${ant.script}</script>
+                <build-target>nb-buildall</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>${project.dir}/jars/sane/derbyclient.jar</location>
+                <script>${ant.script}</script>
+                <build-target>nb-buildall</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>${project.dir}/jars/sane/derbynet.jar</location>
+                <script>${ant.script}</script>
+                <build-target>nb-buildall</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>${project.dir}/jars/sane/derbyrun.jar</location>
+                <script>${ant.script}</script>
+                <build-target>nb-buildall</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>${project.dir}/jars/sane/derbytools.jar</location>
+                <script>${ant.script}</script>
+                <build-target>nb-buildall</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.engine</label>
+                        <location>${project.dir}/java/org.apache.derby.engine</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.client</label>
+                        <location>${project.dir}/java/org.apache.derby.client</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.server</label>
+                        <location>${project.dir}/java/org.apache.derby.server</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.tools</label>
+                        <location>${project.dir}/java/org.apache.derby.tools</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.commons</label>
+                        <location>${project.dir}/java/org.apache.derby.commons</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.optionaltools</label>
+                        <location>${project.dir}/java/org.apache.derby.optionaltools</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>java/org.apache.derby.runner</label>
+                        <location>${project.dir}/java/org.apache.derby.runner</location>
+                    </source-folder>
+                    <source-folder>
+                        <label>java/locales</label>
+                        <location>${project.dir}/java/locales</location>
+                    </source-folder>
+                    <source-file>
+                        <location>${ant.script}</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="javadoc"/>
+                    <ide-action name="test"/>
+                    <ide-action name="debug-ij"/>
+                    <ide-action name="debug-server"/>
+                    <action>
+                        <script>${ant.script}</script>
+                        <label>build-classes</label>
+                        <target>all</target>
+                    </action>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/4">
+            <compilation-unit>
+                <package-root>${project.dir}/java/org.apache.derby.client</package-root>
+                <package-root>${project.dir}/java/org.apache.derby.commons</package-root>
+                <package-root>${project.dir}/java/org.apache.derby.engine</package-root>
+                <package-root>${project.dir}/java/org.apache.derby.optionaltools</package-root>
+                <package-root>${project.dir}/java/org.apache.derby.runner</package-root>
+                <package-root>${project.dir}/java/org.apache.derby.server</package-root>
+                <package-root>${project.dir}/java/org.apache.derby.tools</package-root>
+                <classpath mode="compile">${project.dir}/tools/java/geronimo-spec-servlet-2.4-rc4.jar:${project.dir}/tools/java/javacc.jar:${project.dir}/tools/java/junit.jar:${ant.core.lib}:${project.dir}/classes/stubs/felix:${project.dir}/tools/java/lucene-analyzers-common.jar:${project.dir}/tools/java/lucene-core.jar:${project.dir}/tools/java/lucene-queryparser.jar</classpath>
+                <built-to>${project.dir}/jars/sane/derby.jar</built-to>
+                <built-to>${project.dir}/jars/sane/derbyTesting.jar</built-to>
+                <built-to>${project.dir}/jars/sane/derbyclient.jar</built-to>
+                <built-to>${project.dir}/jars/sane/derbynet.jar</built-to>
+                <built-to>${project.dir}/jars/sane/derbyrun.jar</built-to>
+                <built-to>${project.dir}/jars/sane/derbytools.jar</built-to>
+                <javadoc-built-to>${project.dir}/javadoc</javadoc-built-to>
+                <source-level>1.8</source-level>
+            </compilation-unit>
+        </java-data>
+        <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
+            <module name="org-netbeans-modules-editor-indent">
+                <node name="CodeStyle">
+                    <property name="usedProfile" value="project"/>
+                    <node name="project">
+                        <property name="spaces-per-tab" value="4"/>
+                        <property name="tab-size" value="4"/>
+                        <property name="indent-shift-width" value="4"/>
+                        <property name="expand-tabs" value="true"/>
+                        <property name="text-limit-width" value="80"/>
+                        <property name="text-line-wrap" value="none"/>
+                    </node>
+                </node>
+                <node name="text">
+                    <node name="x-java">
+                        <node name="CodeStyle">
+                            <node name="project">
+                                <property name="allowConvertToStarImport" value="false"/>
+                                <property name="allowConvertToStaticStarImport" value="false"/>
+                                <property name="importGroupsOrder" value="*"/>
+                            </node>
+                        </node>
+                    </node>
+                </node>
+            </module>
+            <module name="org-netbeans-modules-projectimport-eclipse-core"/>
+        </preferences>
+    </configuration>
+</project>

@@ -1,0 +1,17 @@
+.DS_Store
+
+# Local build output
+/classes/
+/classes.pptesting/
+/generated/
+/jars/
+/javadoc/
+/snapshot/
+
+# NetBeans local/private settings
+/tools/ide/netbeans/nbproject/private/
+
+# Temporary files
+*.log
+*.tmp
+*~
