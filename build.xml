@@ -2555,7 +2555,47 @@
   </target>
 
 
-   <target name="getsvnversion" unless="changenumber">
+   <target name="getgitversion" unless="changenumber">
+     <condition property="git.available">
+       <available file="${basedir}/.git"/>
+     </condition>
+   </target>
+
+   <target name="readgitversion" depends="getgitversion" if="git.available" unless="changenumber">
+     <exec executable="git"
+           failifexecutionfails="no"
+           output="${out.base}/changenumber.properties">
+       <arg value="-C"/>
+       <arg value="${basedir}"/>
+       <arg value="rev-parse"/>
+       <arg value="--short=12"/>
+       <arg value="HEAD"/>
+     </exec>
+     <loadfile srcFile="${out.base}/changenumber.properties"
+               failonerror="false"
+               property="changenumber">
+       <filterchain>
+         <striplinebreaks/>
+       </filterchain>
+     </loadfile>
+   </target>
+
+   <target name="checksvnversion" unless="changenumber">
+     <condition property="svn.available">
+       <available file="${basedir}/.svn" type="dir"/>
+     </condition>
+   </target>
+
+   <target name="getsvnversion" depends="readgitversion,readsvnversion" unless="changenumber">
+     <condition property="changenumber" value="???">
+       <not>
+         <isset property="changenumber"/>
+       </not>
+     </condition>
+     <echo level="info" message="Revision number set to ${changenumber}."/>
+   </target>
+
+   <target name="readsvnversion" depends="checksvnversion" if="svn.available" unless="changenumber">
      <exec executable="svnversion"
            failifexecutionfails="no"
            output="${out.base}/changenumber.properties">
@@ -2569,12 +2609,6 @@
          <striplinebreaks/>
        </filterchain>
      </loadfile>    
-     <condition property="changenumber" value="???">
-       <not>
-         <isset property="changenumber"/>
-       </not>
-     </condition>
-     <echo level="info" message="Revision number set to ${changenumber}."/>
    </target>
 
   <target name="cleanjars" depends="setsanityname">
