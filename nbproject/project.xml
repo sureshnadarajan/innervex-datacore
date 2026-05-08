@@ -185,7 +185,7 @@
                         <label>java/org.apache.derby.runner</label>
                         <location>${project.dir}/java/org.apache.derby.runner</location>
                     </source-folder>
-                    <source-folder>
+                    <source-folder style="tree">
                         <label>java/locales</label>
                         <location>${project.dir}/java/locales</location>
                     </source-folder>
