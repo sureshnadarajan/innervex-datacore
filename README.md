@@ -24,6 +24,29 @@ ant -quiet clobber buildsource buildjars
 
 The main generated product jars are created under `jars/sane/`.
 
+`sane` is Derby's development build flavor. It keeps Derby sanity checks
+enabled so internal problems are easier to catch while working on the engine.
+
+## NetBeans
+
+Open the repository root directly in NetBeans:
+
+```text
+/Users/sureshn/Projects/db-derby-10/innervex-datacore
+```
+
+The root `nbproject` metadata exposes the main source modules and delegates
+build actions to the top-level Ant `build.xml`.
+
+Recommended local setup:
+
+- JDK 21 or newer
+- Ant 1.10.14 or newer
+- Trust the project build script when NetBeans prompts
+
+Build outputs such as `classes/`, `generated/`, `jars/`, and
+`changenumber.properties` are local artifacts and are ignored by Git.
+
 ## Source Layout
 
 - `java/org.apache.derby.engine` - core database engine
