@@ -10,6 +10,7 @@
 /snapshot/
 
 # NetBeans local/private settings
+/nbproject/private/
 /tools/ide/netbeans/nbproject/private/
 
 # Temporary files
