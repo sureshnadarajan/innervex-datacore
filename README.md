@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/assets/ivx-datacore-logo.png" alt="Innervex DataCore logo" width="640">
-</p>
+![Innervex DataCore logo](docs/assets/ivx-datacore-logo.png)
 
 # Innervex DataCore
 
