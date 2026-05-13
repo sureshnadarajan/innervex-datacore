@@ -14,88 +14,329 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
+<!doctype html>
 <html lang="en">
-<title>Welcome to Innervex DataCore</title>
-<body>
-<center>
-<img
-  src="docs/assets/ivx-datacore-logo.png"
-  alt="Innervex DataCore logo"
-  style="max-width: 640px; width: 90%; height: auto; margin-top: 24px;"
-/>
-<h1>Innervex DataCore</h1>
-<p>
-Enterprise-grade embedded relational database technology for Java platforms,
-based on Apache Derby.
-</p>
-<p>
-Innervex DataCore is an independent open-source project. It is not an
-official Apache Derby release and is not affiliated with or endorsed by the
-Apache Software Foundation.
-</p>
-<p>
-Apache Derby documentation and upstream resources are listed below. Some
-generated documentation assets are not included in this source repository until
-the documentation build is run.
-</p>
-<h2>Contents</h2>
-<a href="#new">New to DataCore / Derby?</a><br/>
-<a href="#using">Using DataCore / Derby</a><br/>
-<a href="#thisDistribution">This Distribution</a><br/>
-<a href="#resources">More Resources</a><br/>
-</center>
-<br/>
-<a name="new"/><h3>New to DataCore / Derby?</h3>
-<p>If this is your first time using Derby, please look at the <a href="docs/html/getstart/index.html">Getting Started Guide</a> <a href="docs/pdf/getstart/getstartderby.pdf">[PDF]</a> for assistance configuring your environment, creating a new database, and executing SQL statements.</p>
-<p>Interested in seeing some code that makes use of Derby? There are also some <a href="demo/programs/readme.html">simple demo applications</a> included to help you understand how to start using Derby in your application.</p>
-<p>Derby includes some tools to help you get started working with Derby databases. Additional information about these tools can be found in the <a href="docs/html/tools/index.html">Derby Tools and Utilities Guide</a> <a href="docs/pdf/tools/derbytools.pdf">[PDF]</a>.</p>
-<p>If you need more help getting started, the Apache Derby website has a <a href="https://db.apache.org/derby/quick_start.html">Quick Start page</a> with links to tutorials, more demo applications, and instructions on how to use Derby with a variety of different IDEs, tools, and web application servers.</p>
-<p>If you need additional help, the Apache Derby Users mailing list can be helpful if you have specific questions regarding setting up and using Derby. For information on how to subscribe and post to the Apache Derby Users mailing list, please read the <a href="https://db.apache.org/derby/derby_mail.html">mailing lists page</a> on the Apache Derby website.</p>
-<br/>
-<a name="using"/><h3>Using DataCore / Derby</h3>
-<p>
-For information on developing and deploying an application with Derby,
-  see the
-<a href="docs/html/devguide/index.html"/>Derby Developer's Guide</a> <a href="docs/pdf/devguide/derbydev.pdf"/>[PDF]</a>.
-A complete reference to Derby's use of JDBC and SQL can be found in the
-<a href="docs/html/ref/index.html">Derby Reference Manual</a> <a href="docs/pdf/ref/refderby.pdf">[PDF]</a>.
-Information on configuring the security of Derby applications can be
-  found in the
-<a href="docs/html/security/index.html">Derby Security Guide</a> <a href="docs/pdf/security/secderby.pdf">[PDF]</a>.
-</p>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Innervex DataCore</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #101828;
+      --muted: #526175;
+      --line: #d8e0ea;
+      --panel: #f7fbff;
+      --navy: #041c4a;
+      --blue: #008ee8;
+      --silver: #eef4fb;
+      --white: #ffffff;
+    }
 
-<p>
-Derby's public API can be found <a href="javadoc/index.html">here</a>.
-</p>
-<p>
-For information on setting up and using the Derby Network Server, which provides a client/server access model for Derby databases on machines connected over a network, please read the <a href="docs/html/adminguide/index.html">Derby Server and Administration Guide</a> <a href="docs/pdf/adminguide/derbyadmin.pdf">[PDF]</a>.
-</p>
-<p>
-Information on how to tune Derby for your specific needs can be found in <a href="docs/html/tuning/index.html">Tuning Derby</a> <a href="docs/pdf/tuning/tuningderby.pdf">[PDF]</a>. This guide includes a reference to the properties which influence Derby's behavior as well as providing performance tips for certain situations.
-</p>
-<br/>
-<a name="thisDistribution"/><h3>This Distribution</h3>
-<p>
-Please consult the following documents for details on the contents of
-this distribution and how this distribution is licensed.
-</p>
-<ul>
-  <li><a href="RELEASE-NOTES.html">Release Notes</a></li>
-  <li><a href="LICENSE">The Apache License</a></li>
-  <li><a href="NOTICE">Relevant Copyrights</a></li>
-</ul>
-<br/>
-<a name="resources"/><h3>More Resources</h3>
-<p>
-If you are looking for more resources on how to use Derby in your application or integrate Derby into a specific environment, please see:
-</p>
-<ul>
-  <li><a href="https://db.apache.org/derby/">The Apache Derby website</a></li>
-  <li><a href="https://cwiki.apache.org/confluence/display/DERBY/FrontPage">The Apache Derby wiki</a></li>
-  <li><a href="https://db.apache.org/derby/integrate/index.html">The Apache Derby resources page</a></li>
-</ul>
-<p>
-Thank you for your interest in Innervex DataCore.
-</p>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    a {
+      color: #006fba;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      color: var(--white);
+      background:
+        linear-gradient(135deg, rgba(4, 28, 74, 0.96), rgba(0, 117, 190, 0.9)),
+        #041c4a;
+      padding: 42px 22px 38px;
+      border-bottom: 4px solid #00a7ff;
+    }
+
+    .hero-inner,
+    main,
+    footer {
+      width: min(1080px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: block;
+      width: min(640px, 100%);
+      height: auto;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #bde8ff;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 4.25rem);
+      line-height: 1.04;
+    }
+
+    .lede {
+      max-width: 820px;
+      margin: 18px 0 0;
+      color: #e7f6ff;
+      font-size: clamp(1.05rem, 1.9vw, 1.32rem);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      border-radius: 6px;
+      color: var(--white);
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .button.primary {
+      color: #061b36;
+      border-color: #80dcff;
+      background: #8ee7ff;
+    }
+
+    main {
+      padding: 34px 0 44px;
+    }
+
+    .notice {
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .card {
+      min-height: 100%;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    h2 {
+      margin: 34px 0 12px;
+      font-size: 1.55rem;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 1.08rem;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .card p,
+    .notice p,
+    li {
+      color: var(--muted);
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: var(--silver);
+      color: #17375f;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.94em;
+    }
+
+    .command {
+      display: block;
+      overflow-x: auto;
+      margin: 12px 0 0;
+      padding: 14px 16px;
+      border-radius: 8px;
+      color: #dff6ff;
+      background: #071b35;
+      white-space: nowrap;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    footer {
+      padding: 22px 0 36px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 760px) {
+      .hero {
+        padding-top: 28px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <img
+        class="brand"
+        src="docs/assets/ivx-datacore-logo.png"
+        alt="Innervex DataCore logo"
+      >
+      <p class="eyebrow">Embedded relational database technology</p>
+      <h1>Innervex DataCore</h1>
+      <p class="lede">
+        Enterprise-grade Java database technology derived from Apache Derby,
+        prepared for focused maintenance, usability improvements, and platform
+        modernization.
+      </p>
+      <div class="actions" aria-label="Primary links">
+        <a class="button primary" href="README.md">Read project overview</a>
+        <a class="button" href="javadoc/index.html">Open public API</a>
+        <a class="button" href="docs/html/getstart/index.html">Getting started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="notice" aria-label="Project notice">
+      <p>
+        Innervex DataCore is an independent open-source project based on
+        Apache Derby. It is not an official Apache Derby release and is not
+        affiliated with, endorsed by, or maintained by the Apache Software
+        Foundation.
+      </p>
+    </section>
+
+    <section class="grid" aria-label="Highlights">
+      <article class="card">
+        <h3>Embedded Engine</h3>
+        <p>
+          A compact relational database engine for Java applications, with SQL,
+          JDBC, transactions, locking, recovery, and local storage.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Network Access</h3>
+        <p>
+          Includes Derby network server and client components for applications
+          that need remote JDBC access.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Developer Build</h3>
+        <p>
+          The primary build remains Ant-based. Development jars are generated
+          under <code>jars/sane/</code>.
+        </p>
+      </article>
+    </section>
+
+    <section id="build">
+      <h2>Build Locally</h2>
+      <p>
+        From the repository root, run the Ant build. NetBeans uses the same
+        project build script.
+      </p>
+      <code class="command">ant -quiet clobber buildsource buildjars</code>
+    </section>
+
+    <section id="docs">
+      <h2>Documentation</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>New to DataCore / Derby?</h3>
+          <ul>
+            <li><a href="docs/html/getstart/index.html">Getting Started Guide</a></li>
+            <li><a href="docs/pdf/getstart/getstartderby.pdf">Getting Started PDF</a></li>
+            <li><a href="demo/programs/readme.html">Demo applications</a></li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Using the Database</h3>
+          <ul>
+            <li><a href="docs/html/devguide/index.html">Developer's Guide</a></li>
+            <li><a href="docs/html/ref/index.html">Reference Manual</a></li>
+            <li><a href="docs/html/tuning/index.html">Tuning Guide</a></li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Server and Security</h3>
+          <ul>
+            <li><a href="docs/html/adminguide/index.html">Server and Administration Guide</a></li>
+            <li><a href="docs/html/security/index.html">Security Guide</a></li>
+            <li><a href="docs/html/tools/index.html">Tools and Utilities Guide</a></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="distribution">
+      <h2>This Distribution</h2>
+      <p>
+        Apache Derby source attribution, copyright notices, license terms, and
+        NOTICE content are preserved.
+      </p>
+      <ul>
+        <li><a href="RELEASE-NOTES.html">Release Notes</a></li>
+        <li><a href="LICENSE">Apache License</a></li>
+        <li><a href="NOTICE">Relevant Copyrights</a></li>
+      </ul>
+    </section>
+
+    <section id="resources">
+      <h2>Upstream Resources</h2>
+      <ul>
+        <li><a href="https://db.apache.org/derby/">Apache Derby website</a></li>
+        <li><a href="https://cwiki.apache.org/confluence/display/DERBY/FrontPage">Apache Derby wiki</a></li>
+        <li><a href="https://db.apache.org/derby/integrate/index.html">Apache Derby integration resources</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Thank you for your interest in Innervex DataCore.
+  </footer>
 </body>
 </html>
