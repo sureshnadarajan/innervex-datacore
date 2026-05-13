@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/ivx-datacore-logo.png" alt="Innervex DataCore logo" width="640">
+</p>
+
 # Innervex DataCore
 
 Enterprise-grade embedded relational database technology for Java platforms,
