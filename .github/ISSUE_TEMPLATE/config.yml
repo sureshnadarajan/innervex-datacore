@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: mailto:admin@innervex.net
+    about: Please report suspected security vulnerabilities privately.
+  - name: Apache Derby upstream
+    url: https://db.apache.org/derby/
+    about: Use upstream Apache Derby resources for official Derby releases.
