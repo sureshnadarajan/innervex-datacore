@@ -26,6 +26,9 @@ This repository begins from the Apache Derby source distribution. The original
 Apache licensing, notices, and source attribution are preserved in `LICENSE`,
 `NOTICE`, and `README`.
 
+For a contributor-oriented map of the codebase, see
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
 ## Build
 
 The primary build remains Ant-based:
