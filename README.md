@@ -10,11 +10,17 @@ workspace derived from Apache Derby 10.17.1.0. The project keeps Derby's proven
 embedded relational database foundation while creating room for focused
 enterprise maintenance, usability improvements, and Java platform evolution.
 
+This project is developed and maintained by Innervex Technologies Private
+Limited as part of the Innervex enterprise data platform work.
+
 ## Public Project Notice
 
 Innervex DataCore is an independent project based on Apache Derby. It is not an
 official Apache Derby release and is not affiliated with, endorsed by, or
 maintained by the Apache Software Foundation.
+
+Innervex and Innervex DataCore branding belong to Innervex Technologies Private
+Limited.
 
 Apache Derby source attribution, copyright notices, license terms, and NOTICE
 content are preserved. New Innervex DataCore changes are developed in this

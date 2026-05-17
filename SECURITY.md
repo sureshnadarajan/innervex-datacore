@@ -4,6 +4,9 @@ Innervex DataCore is an independent open-source project based on Apache Derby.
 It is not an official Apache Derby release and is not maintained by the Apache
 Software Foundation.
 
+The project is developed and maintained by Innervex Technologies Private
+Limited.
+
 ## Reporting a Vulnerability
 
 Please do not open public GitHub issues for suspected security vulnerabilities.
