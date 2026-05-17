@@ -102,3 +102,14 @@ identify tests that prove compatibility.
 
 Innervex DataCore is based on Apache Derby and is distributed under the Apache
 License, Version 2.0. See `LICENSE` and `NOTICE` for details.
+
+Copyright for new Innervex DataCore modifications, project branding,
+project documentation, and project-specific assets:
+
+```text
+Copyright 2026 Innervex Technologies Private Limited.
+```
+
+See `NOTICE-INNERVEX` for project-specific attribution. Original Apache Derby
+source attribution, copyright notices, license terms, and NOTICE content are
+preserved.
