@@ -68,6 +68,8 @@ Contributions are welcome. Please keep changes small, focused, and compatible
 with the existing Derby behavior unless a change is clearly documented as a
 planned modernization.
 
+For private vulnerability reporting, see [`SECURITY.md`](SECURITY.md).
+
 Good first areas:
 
 - Build and IDE cleanup
