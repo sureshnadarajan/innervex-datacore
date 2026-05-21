@@ -7,7 +7,7 @@ must be guided by repeatable evidence, not by guesswork or broad rewrites.
 ## Goals
 
 - Establish clear baseline numbers for the current DataCore engine
-- Improve performance for real Innervex product workloads
+- Improve performance for real embedded database workloads
 - Preserve Derby-compatible SQL, JDBC, transaction, locking, storage, and
   recovery behavior
 - Make bottlenecks visible through profiling, diagnostics, and focused tests
@@ -70,7 +70,7 @@ The first useful performance milestone is not an engine rewrite. It is a
 repeatable benchmark baseline that can answer:
 
 - What is DataCore fast at today?
-- Where does it fall behind for Innervex workloads?
+- Where does DataCore fall behind in real embedded database workloads?
 - Which bottlenecks are caused by locking, storage, query planning, network
   access, startup, or memory pressure?
 - Which improvements are safe to make without breaking compatibility?

@@ -31,7 +31,7 @@ The performance plan is documented in `docs/PERFORMANCE.md`.
 - Identify lock contention cases
 - Measure embedded and client/server workloads
 - Compare Derby behavior against H2, PostgreSQL, and Firebird where useful
-- Establish baseline performance targets for Innervex product workloads
+- Establish baseline performance targets for real application workloads
 
 ## Phase 4: Safe Modernization
 
