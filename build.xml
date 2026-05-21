@@ -38,6 +38,7 @@
   <property name="datacore.benchmark.rows" value="5000"/>
   <property name="datacore.benchmark.reads" value="50000"/>
   <property name="datacore.benchmark.ranges" value="5000"/>
+  <property name="datacore.benchmark.threads" value="4"/>
   <property name="datacore.benchmark.warmup" value="1"/>
   <property name="datacore.benchmark.iterations" value="3"/>
   <property name="datacore.benchmark.results" value="${generated.dir}/performance/results.csv"/>
@@ -109,6 +110,7 @@
       <sysproperty key="datacore.benchmark.rows" value="${datacore.benchmark.rows}"/>
       <sysproperty key="datacore.benchmark.reads" value="${datacore.benchmark.reads}"/>
       <sysproperty key="datacore.benchmark.ranges" value="${datacore.benchmark.ranges}"/>
+      <sysproperty key="datacore.benchmark.threads" value="${datacore.benchmark.threads}"/>
       <sysproperty key="datacore.benchmark.warmup" value="${datacore.benchmark.warmup}"/>
       <sysproperty key="datacore.benchmark.iterations" value="${datacore.benchmark.iterations}"/>
       <sysproperty key="datacore.benchmark.db" value="${generated.dir}/performance/embedded-baseline-db"/>

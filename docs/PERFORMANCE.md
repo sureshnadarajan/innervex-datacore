@@ -115,6 +115,17 @@ The read-heavy workload loads the table, then measures repeated primary-key
 lookups. The number of lookups can be changed with
 `-Ddatacore.benchmark.reads=100000`.
 
+To run the concurrent-read workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=concurrent-read datacore-embedded-benchmark
+```
+
+The concurrent-read workload loads the table, then opens multiple embedded
+connections and performs primary-key lookups from several reader threads. The
+number of lookups and threads can be changed with
+`-Ddatacore.benchmark.reads=100000 -Ddatacore.benchmark.threads=8`.
+
 To run the insert-heavy workload:
 
 ```sh

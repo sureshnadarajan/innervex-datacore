@@ -32,6 +32,9 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,6 +43,7 @@ public final class EmbeddedBaselineBenchmark {
     private static final String ROWS_PROPERTY = "datacore.benchmark.rows";
     private static final String READS_PROPERTY = "datacore.benchmark.reads";
     private static final String RANGES_PROPERTY = "datacore.benchmark.ranges";
+    private static final String THREADS_PROPERTY = "datacore.benchmark.threads";
     private static final String WARMUP_PROPERTY = "datacore.benchmark.warmup";
     private static final String ITERATIONS_PROPERTY =
             "datacore.benchmark.iterations";
@@ -60,6 +64,7 @@ public final class EmbeddedBaselineBenchmark {
         int rows = Integer.getInteger(ROWS_PROPERTY, 5000);
         int readOperations = Integer.getInteger(READS_PROPERTY, rows * 10);
         int rangeOperations = Integer.getInteger(RANGES_PROPERTY, rows);
+        int threads = Math.max(1, Integer.getInteger(THREADS_PROPERTY, 4));
         int warmup = Integer.getInteger(WARMUP_PROPERTY, 1);
         int iterations = Integer.getInteger(ITERATIONS_PROPERTY, 3);
         String gitCommit = System.getProperty(GIT_COMMIT_PROPERTY, "unknown");
@@ -77,6 +82,10 @@ public final class EmbeddedBaselineBenchmark {
         if ("read-heavy".equals(workload)) {
             System.out.println("read_operations=" + readOperations);
         }
+        if ("concurrent-read".equals(workload)) {
+            System.out.println("read_operations=" + readOperations);
+            System.out.println("threads=" + threads);
+        }
         if ("range-scan".equals(workload)) {
             System.out.println("range_operations=" + rangeOperations);
         }
@@ -86,13 +95,14 @@ public final class EmbeddedBaselineBenchmark {
 
         for (int iteration = 1; iteration <= warmup; iteration++) {
             runOnce(dbPath, workload, rows, readOperations, "warmup",
-                    iteration, rangeOperations);
+                    iteration, rangeOperations, threads);
         }
 
         List<BenchmarkResult> measuredResults = new ArrayList<>();
         for (int iteration = 1; iteration <= iterations; iteration++) {
             BenchmarkResult result = runOnce(dbPath, workload, rows,
-                    readOperations, "measured", iteration, rangeOperations);
+                    readOperations, "measured", iteration, rangeOperations,
+                    threads);
             result.gitCommit = gitCommit;
             printResults(result);
             appendResults(resultsPath, result);
@@ -107,12 +117,12 @@ public final class EmbeddedBaselineBenchmark {
             int rows, int readOperations, String runType, int iteration)
             throws Exception {
         return runOnce(dbPath, workload, rows, readOperations, runType,
-                iteration, rows);
+                iteration, rows, 4);
     }
 
     private static BenchmarkResult runOnce(Path dbPath, String workload,
             int rows, int readOperations, String runType, int iteration,
-            int rangeOperations)
+            int rangeOperations, int threads)
             throws Exception {
         if ("mixed".equals(workload)) {
             return runMixed(dbPath, workload, rows, readOperations, runType,
@@ -122,6 +132,11 @@ public final class EmbeddedBaselineBenchmark {
         if ("read-heavy".equals(workload)) {
             return runReadHeavy(dbPath, workload, rows, readOperations,
                     runType, iteration);
+        }
+
+        if ("concurrent-read".equals(workload)) {
+            return runConcurrentRead(dbPath, workload, rows, readOperations,
+                    threads, runType, iteration);
         }
 
         if ("insert-heavy".equals(workload)) {
@@ -194,6 +209,33 @@ public final class EmbeddedBaselineBenchmark {
             result.lookupNanos = time(() -> readHeavyLookups(connection, rows,
                     readOperations));
             connection.commit();
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
+    private static BenchmarkResult runConcurrentRead(Path dbPath,
+            String workload, int rows, int readOperations, int threads,
+            String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, readOperations);
+            result.insertNanos = time(() -> insertRows(connection, rows));
+            connection.commit();
+
+            long lookupStartNanos = System.nanoTime();
+            concurrentReadLookups(url, rows, readOperations, threads);
+            result.lookupNanos = System.nanoTime() - lookupStartNanos;
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
         } finally {
@@ -395,6 +437,55 @@ public final class EmbeddedBaselineBenchmark {
                     resultSet.getInt(2);
                 }
             }
+        }
+    }
+
+    private static void concurrentReadLookups(String url, int rows,
+            int readOperations, int threads) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
+        List<Future<Void>> futures = new ArrayList<>();
+        int baseReadsPerThread = readOperations / threads;
+        int extraReads = readOperations % threads;
+
+        try {
+            for (int thread = 0; thread < threads; thread++) {
+                final int threadIndex = thread;
+                final int operations = baseReadsPerThread
+                        + (thread < extraReads ? 1 : 0);
+                futures.add(executor.submit(() -> {
+                    readLookupsOnNewConnection(url, rows, operations,
+                            threadIndex);
+                    return null;
+                }));
+            }
+
+            for (Future<Void> future : futures) {
+                future.get();
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    private static void readLookupsOnNewConnection(String url, int rows,
+            int readOperations, int offset) throws SQLException {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "select name, amount from baseline_item where id = ?")) {
+                for (int index = 1; index <= readOperations; index++) {
+                    int id = (((index + offset) * 31) % rows) + 1;
+                    statement.setInt(1, id);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (!resultSet.next()) {
+                            throw new SQLException("Missing row " + id);
+                        }
+                        resultSet.getString(1);
+                        resultSet.getInt(2);
+                    }
+                }
+            }
+            connection.commit();
         }
     }
 
