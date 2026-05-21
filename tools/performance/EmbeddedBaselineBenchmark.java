@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -79,13 +80,16 @@ public final class EmbeddedBaselineBenchmark {
                     iteration);
         }
 
+        List<BenchmarkResult> measuredResults = new ArrayList<>();
         for (int iteration = 1; iteration <= iterations; iteration++) {
             BenchmarkResult result = runOnce(dbPath, workload, rows,
                     readOperations, "measured", iteration);
             printResults(result);
             appendResults(resultsPath, result);
+            measuredResults.add(result);
         }
 
+        printSummary(measuredResults);
         System.out.println("results_csv=" + resultsPath.toAbsolutePath());
     }
 
@@ -263,6 +267,44 @@ public final class EmbeddedBaselineBenchmark {
         System.out.printf("%s=%.3f%n", name, nanos / 1_000_000.0d);
     }
 
+    private static void printSummary(List<BenchmarkResult> results) {
+        if (results.isEmpty()) {
+            return;
+        }
+
+        System.out.println("summary=measured_iterations");
+        printStats("insert_ms", collect(results, Metric.INSERT));
+        printStats("lookup_ms", collect(results, Metric.LOOKUP));
+        printStats("update_ms", collect(results, Metric.UPDATE));
+        printStats("scan_ms", collect(results, Metric.SCAN));
+        printStats("total_ms", collect(results, Metric.TOTAL));
+    }
+
+    private static void printStats(String name, List<Long> values) {
+        long min = Long.MAX_VALUE;
+        long max = Long.MIN_VALUE;
+        long total = 0L;
+        for (Long value : values) {
+            min = Math.min(min, value.longValue());
+            max = Math.max(max, value.longValue());
+            total += value.longValue();
+        }
+
+        double average = total / (double) values.size();
+        System.out.printf("%s_avg=%.3f%n", name, average / 1_000_000.0d);
+        System.out.printf("%s_min=%.3f%n", name, min / 1_000_000.0d);
+        System.out.printf("%s_max=%.3f%n", name, max / 1_000_000.0d);
+    }
+
+    private static List<Long> collect(List<BenchmarkResult> results,
+            Metric metric) {
+        List<Long> values = new ArrayList<>();
+        for (BenchmarkResult result : results) {
+            values.add(Long.valueOf(metric.value(result)));
+        }
+        return values;
+    }
+
     private static void appendResults(Path resultsPath, BenchmarkResult result)
             throws IOException {
         ensureResultsHeader(resultsPath);
@@ -387,6 +429,41 @@ public final class EmbeddedBaselineBenchmark {
             this.rows = rows;
             this.readOperations = readOperations;
         }
+    }
+
+    private enum Metric {
+        INSERT {
+            @Override
+            long value(BenchmarkResult result) {
+                return result.insertNanos;
+            }
+        },
+        LOOKUP {
+            @Override
+            long value(BenchmarkResult result) {
+                return result.lookupNanos;
+            }
+        },
+        UPDATE {
+            @Override
+            long value(BenchmarkResult result) {
+                return result.updateNanos;
+            }
+        },
+        SCAN {
+            @Override
+            long value(BenchmarkResult result) {
+                return result.scanNanos;
+            }
+        },
+        TOTAL {
+            @Override
+            long value(BenchmarkResult result) {
+                return result.totalNanos;
+            }
+        };
+
+        abstract long value(BenchmarkResult result);
     }
 
     @FunctionalInterface
