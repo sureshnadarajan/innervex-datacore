@@ -89,8 +89,9 @@ The benchmark creates a local database under `generated/performance/`, runs
 warmup and measured iterations of a small insert, lookup, update, and grouped
 scan workload, then prints timing results. It also appends measured iterations
 to `generated/performance/results.csv` so local baseline history can be
-compared over time. The default row count is intentionally small so
-contributors can run it quickly during development.
+compared over time. CSV rows include the current Git commit id so performance
+results can be tied back to the exact source version. The default row count is
+intentionally small so contributors can run it quickly during development.
 
 To run a larger local sample:
 

@@ -111,6 +111,7 @@
       <sysproperty key="datacore.benchmark.iterations" value="${datacore.benchmark.iterations}"/>
       <sysproperty key="datacore.benchmark.db" value="${generated.dir}/performance/embedded-baseline-db"/>
       <sysproperty key="datacore.benchmark.results" value="${datacore.benchmark.results}"/>
+      <sysproperty key="datacore.benchmark.gitCommit" value="${changenumber}"/>
     </java>
   </target>
 

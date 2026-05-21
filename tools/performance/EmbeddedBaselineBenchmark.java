@@ -44,10 +44,12 @@ public final class EmbeddedBaselineBenchmark {
             "datacore.benchmark.iterations";
     private static final String DB_PROPERTY = "datacore.benchmark.db";
     private static final String RESULTS_PROPERTY = "datacore.benchmark.results";
+    private static final String GIT_COMMIT_PROPERTY =
+            "datacore.benchmark.gitCommit";
     private static final String CSV_HEADER =
             "timestamp,workload,run_type,iteration,rows,read_operations," +
             "insert_ms,lookup_ms,update_ms,scan_ms,total_ms,java_version," +
-            "os_name,os_arch\n";
+            "os_name,os_arch,git_commit\n";
 
     private EmbeddedBaselineBenchmark() {
     }
@@ -58,6 +60,7 @@ public final class EmbeddedBaselineBenchmark {
         int readOperations = Integer.getInteger(READS_PROPERTY, rows * 10);
         int warmup = Integer.getInteger(WARMUP_PROPERTY, 1);
         int iterations = Integer.getInteger(ITERATIONS_PROPERTY, 3);
+        String gitCommit = System.getProperty(GIT_COMMIT_PROPERTY, "unknown");
         Path dbPath = Paths.get(System.getProperty(DB_PROPERTY,
                 "generated/performance/embedded-baseline-db"));
         Path resultsPath = Paths.get(System.getProperty(RESULTS_PROPERTY,
@@ -74,6 +77,7 @@ public final class EmbeddedBaselineBenchmark {
         }
         System.out.println("warmup=" + warmup);
         System.out.println("iterations=" + iterations);
+        System.out.println("git_commit=" + gitCommit);
 
         for (int iteration = 1; iteration <= warmup; iteration++) {
             runOnce(dbPath, workload, rows, readOperations, "warmup",
@@ -84,6 +88,7 @@ public final class EmbeddedBaselineBenchmark {
         for (int iteration = 1; iteration <= iterations; iteration++) {
             BenchmarkResult result = runOnce(dbPath, workload, rows,
                     readOperations, "measured", iteration);
+            result.gitCommit = gitCommit;
             printResults(result);
             appendResults(resultsPath, result);
             measuredResults.add(result);
@@ -322,7 +327,8 @@ public final class EmbeddedBaselineBenchmark {
                 .append(toMillis(result.totalNanos)).append(',')
                 .append(csv(System.getProperty("java.version"))).append(',')
                 .append(csv(System.getProperty("os.name"))).append(',')
-                .append(csv(System.getProperty("os.arch"))).append('\n');
+                .append(csv(System.getProperty("os.arch"))).append(',')
+                .append(csv(result.gitCommit)).append('\n');
 
         Files.write(resultsPath, line.toString().getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
@@ -420,6 +426,7 @@ public final class EmbeddedBaselineBenchmark {
         private long updateNanos;
         private long scanNanos;
         private long totalNanos;
+        private String gitCommit = "unknown";
 
         private BenchmarkResult(String workload, String runType, int iteration,
                 int rows, int readOperations) {
