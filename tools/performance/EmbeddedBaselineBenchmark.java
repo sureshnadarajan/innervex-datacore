@@ -39,6 +39,7 @@ public final class EmbeddedBaselineBenchmark {
     private static final String WORKLOAD_PROPERTY = "datacore.benchmark.workload";
     private static final String ROWS_PROPERTY = "datacore.benchmark.rows";
     private static final String READS_PROPERTY = "datacore.benchmark.reads";
+    private static final String RANGES_PROPERTY = "datacore.benchmark.ranges";
     private static final String WARMUP_PROPERTY = "datacore.benchmark.warmup";
     private static final String ITERATIONS_PROPERTY =
             "datacore.benchmark.iterations";
@@ -58,6 +59,7 @@ public final class EmbeddedBaselineBenchmark {
         String workload = System.getProperty(WORKLOAD_PROPERTY, "mixed");
         int rows = Integer.getInteger(ROWS_PROPERTY, 5000);
         int readOperations = Integer.getInteger(READS_PROPERTY, rows * 10);
+        int rangeOperations = Integer.getInteger(RANGES_PROPERTY, rows);
         int warmup = Integer.getInteger(WARMUP_PROPERTY, 1);
         int iterations = Integer.getInteger(ITERATIONS_PROPERTY, 3);
         String gitCommit = System.getProperty(GIT_COMMIT_PROPERTY, "unknown");
@@ -75,19 +77,22 @@ public final class EmbeddedBaselineBenchmark {
         if ("read-heavy".equals(workload)) {
             System.out.println("read_operations=" + readOperations);
         }
+        if ("range-scan".equals(workload)) {
+            System.out.println("range_operations=" + rangeOperations);
+        }
         System.out.println("warmup=" + warmup);
         System.out.println("iterations=" + iterations);
         System.out.println("git_commit=" + gitCommit);
 
         for (int iteration = 1; iteration <= warmup; iteration++) {
             runOnce(dbPath, workload, rows, readOperations, "warmup",
-                    iteration);
+                    iteration, rangeOperations);
         }
 
         List<BenchmarkResult> measuredResults = new ArrayList<>();
         for (int iteration = 1; iteration <= iterations; iteration++) {
             BenchmarkResult result = runOnce(dbPath, workload, rows,
-                    readOperations, "measured", iteration);
+                    readOperations, "measured", iteration, rangeOperations);
             result.gitCommit = gitCommit;
             printResults(result);
             appendResults(resultsPath, result);
@@ -101,6 +106,14 @@ public final class EmbeddedBaselineBenchmark {
     private static BenchmarkResult runOnce(Path dbPath, String workload,
             int rows, int readOperations, String runType, int iteration)
             throws Exception {
+        return runOnce(dbPath, workload, rows, readOperations, runType,
+                iteration, rows);
+    }
+
+    private static BenchmarkResult runOnce(Path dbPath, String workload,
+            int rows, int readOperations, String runType, int iteration,
+            int rangeOperations)
+            throws Exception {
         if ("mixed".equals(workload)) {
             return runMixed(dbPath, workload, rows, readOperations, runType,
                     iteration);
@@ -108,6 +121,11 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("read-heavy".equals(workload)) {
             return runReadHeavy(dbPath, workload, rows, readOperations,
+                    runType, iteration);
+        }
+
+        if ("range-scan".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
                     runType, iteration);
         }
 
@@ -158,6 +176,32 @@ public final class EmbeddedBaselineBenchmark {
 
             result.lookupNanos = time(() -> readHeavyLookups(connection, rows,
                     readOperations));
+            connection.commit();
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
+    private static BenchmarkResult runRangeScan(Path dbPath, String workload,
+            int rows, int rangeOperations, String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, rangeOperations);
+            result.insertNanos = time(() -> insertRows(connection, rows));
+            connection.commit();
+
+            result.scanNanos = time(() -> indexedRangeScans(connection,
+                    rangeOperations));
             connection.commit();
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
@@ -248,6 +292,26 @@ public final class EmbeddedBaselineBenchmark {
             while (resultSet.next()) {
                 resultSet.getInt(1);
                 resultSet.getInt(2);
+            }
+        }
+    }
+
+    private static void indexedRangeScans(Connection connection,
+            int rangeOperations) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "select id, name, amount from baseline_item " +
+                "where amount between ? and ? order by amount, id")) {
+            for (int index = 0; index < rangeOperations; index++) {
+                int start = index % 90;
+                statement.setInt(1, start);
+                statement.setInt(2, start + 9);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        resultSet.getInt(1);
+                        resultSet.getString(2);
+                        resultSet.getInt(3);
+                    }
+                }
             }
         }
     }

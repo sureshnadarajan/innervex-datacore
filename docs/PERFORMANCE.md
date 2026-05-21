@@ -114,3 +114,13 @@ ant -Ddatacore.benchmark.workload=read-heavy datacore-embedded-benchmark
 The read-heavy workload loads the table, then measures repeated primary-key
 lookups. The number of lookups can be changed with
 `-Ddatacore.benchmark.reads=100000`.
+
+To run the indexed range-scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan datacore-embedded-benchmark
+```
+
+The range-scan workload loads the table, then repeatedly queries ranges over
+the indexed `amount` column. The number of range queries can be changed with
+`-Ddatacore.benchmark.ranges=10000`.
