@@ -36,46 +36,69 @@ import java.util.stream.Stream;
 
 public final class EmbeddedBaselineBenchmark {
     private static final String ROWS_PROPERTY = "datacore.benchmark.rows";
+    private static final String WARMUP_PROPERTY = "datacore.benchmark.warmup";
+    private static final String ITERATIONS_PROPERTY =
+            "datacore.benchmark.iterations";
     private static final String DB_PROPERTY = "datacore.benchmark.db";
     private static final String RESULTS_PROPERTY = "datacore.benchmark.results";
     private static final String CSV_HEADER =
-            "timestamp,rows,insert_ms,lookup_ms,update_ms,scan_ms,total_ms," +
-            "java_version,os_name,os_arch\n";
+            "timestamp,run_type,iteration,rows,insert_ms,lookup_ms,update_ms," +
+            "scan_ms,total_ms,java_version,os_name,os_arch\n";
 
     private EmbeddedBaselineBenchmark() {
     }
 
     public static void main(String[] args) throws Exception {
         int rows = Integer.getInteger(ROWS_PROPERTY, 5000);
+        int warmup = Integer.getInteger(WARMUP_PROPERTY, 1);
+        int iterations = Integer.getInteger(ITERATIONS_PROPERTY, 3);
         Path dbPath = Paths.get(System.getProperty(DB_PROPERTY,
                 "generated/performance/embedded-baseline-db"));
         Path resultsPath = Paths.get(System.getProperty(RESULTS_PROPERTY,
                 "generated/performance/results.csv"));
 
+        Files.createDirectories(parentOf(dbPath));
+        Files.createDirectories(parentOf(resultsPath));
+
+        System.out.println("Innervex DataCore embedded baseline");
+        System.out.println("rows=" + rows);
+        System.out.println("warmup=" + warmup);
+        System.out.println("iterations=" + iterations);
+
+        for (int iteration = 1; iteration <= warmup; iteration++) {
+            runOnce(dbPath, rows, "warmup", iteration);
+        }
+
+        for (int iteration = 1; iteration <= iterations; iteration++) {
+            BenchmarkResult result = runOnce(dbPath, rows, "measured",
+                    iteration);
+            printResults(result);
+            appendResults(resultsPath, result);
+        }
+
+        System.out.println("results_csv=" + resultsPath.toAbsolutePath());
+    }
+
+    private static BenchmarkResult runOnce(Path dbPath, int rows,
+            String runType, int iteration) throws Exception {
         deleteIfExists(dbPath);
-        Files.createDirectories(dbPath.getParent());
-        Files.createDirectories(resultsPath.getParent());
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
-
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-
             createSchema(connection);
 
-            long insertNanos = time(() -> insertRows(connection, rows));
-            long lookupNanos = time(() -> lookupRows(connection, rows));
-            long updateNanos = time(() -> updateRows(connection, rows));
-            long scanNanos = time(() -> scanRows(connection));
+            BenchmarkResult result = new BenchmarkResult(runType, iteration,
+                    rows);
+            result.insertNanos = time(() -> insertRows(connection, rows));
+            result.lookupNanos = time(() -> lookupRows(connection, rows));
+            result.updateNanos = time(() -> updateRows(connection, rows));
+            result.scanNanos = time(() -> scanRows(connection));
 
             connection.commit();
-
-            long totalNanos = System.nanoTime() - startNanos;
-            printResults(rows, insertNanos, lookupNanos, updateNanos,
-                    scanNanos, totalNanos);
-            appendResults(resultsPath, rows, insertNanos, lookupNanos,
-                    updateNanos, scanNanos, totalNanos);
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
         } finally {
             shutdown(dbPath);
         }
@@ -155,46 +178,68 @@ public final class EmbeddedBaselineBenchmark {
         return System.nanoTime() - startNanos;
     }
 
-    private static void printResults(int rows, long insertNanos,
-            long lookupNanos, long updateNanos, long scanNanos,
-            long totalNanos) {
-        System.out.println("Innervex DataCore embedded baseline");
-        System.out.println("rows=" + rows);
-        printMillis("insert_ms", insertNanos);
-        printMillis("lookup_ms", lookupNanos);
-        printMillis("update_ms", updateNanos);
-        printMillis("scan_ms", scanNanos);
-        printMillis("total_ms", totalNanos);
+    private static void printResults(BenchmarkResult result) {
+        System.out.println("measured_iteration=" + result.iteration);
+        printMillis("insert_ms", result.insertNanos);
+        printMillis("lookup_ms", result.lookupNanos);
+        printMillis("update_ms", result.updateNanos);
+        printMillis("scan_ms", result.scanNanos);
+        printMillis("total_ms", result.totalNanos);
     }
 
     private static void printMillis(String name, long nanos) {
         System.out.printf("%s=%.3f%n", name, nanos / 1_000_000.0d);
     }
 
-    private static void appendResults(Path resultsPath, int rows,
-            long insertNanos, long lookupNanos, long updateNanos,
-            long scanNanos, long totalNanos) throws IOException {
-        boolean writeHeader = !Files.exists(resultsPath);
+    private static void appendResults(Path resultsPath, BenchmarkResult result)
+            throws IOException {
+        ensureResultsHeader(resultsPath);
         StringBuilder line = new StringBuilder();
         line.append(Instant.now()).append(',')
-                .append(rows).append(',')
-                .append(toMillis(insertNanos)).append(',')
-                .append(toMillis(lookupNanos)).append(',')
-                .append(toMillis(updateNanos)).append(',')
-                .append(toMillis(scanNanos)).append(',')
-                .append(toMillis(totalNanos)).append(',')
+                .append(result.runType).append(',')
+                .append(result.iteration).append(',')
+                .append(result.rows).append(',')
+                .append(toMillis(result.insertNanos)).append(',')
+                .append(toMillis(result.lookupNanos)).append(',')
+                .append(toMillis(result.updateNanos)).append(',')
+                .append(toMillis(result.scanNanos)).append(',')
+                .append(toMillis(result.totalNanos)).append(',')
                 .append(csv(System.getProperty("java.version"))).append(',')
                 .append(csv(System.getProperty("os.name"))).append(',')
                 .append(csv(System.getProperty("os.arch"))).append('\n');
 
-        if (writeHeader) {
-            Files.write(resultsPath, CSV_HEADER.getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        }
         Files.write(resultsPath, line.toString().getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+    }
 
-        System.out.println("results_csv=" + resultsPath.toAbsolutePath());
+    private static void ensureResultsHeader(Path resultsPath)
+            throws IOException {
+        if (!Files.exists(resultsPath)) {
+            writeHeader(resultsPath);
+            return;
+        }
+
+        List<String> lines = Files.readAllLines(resultsPath,
+                StandardCharsets.UTF_8);
+        if (lines.isEmpty()) {
+            writeHeader(resultsPath);
+            return;
+        }
+
+        if (!CSV_HEADER.trim().equals(lines.get(0).trim())) {
+            Path backupPath = resultsPath.resolveSibling(
+                    resultsPath.getFileName() + "." + Instant.now().toEpochMilli()
+                    + ".bak");
+            Files.move(resultsPath, backupPath);
+            writeHeader(resultsPath);
+            System.out.println("archived_previous_results="
+                    + backupPath.toAbsolutePath());
+        }
+    }
+
+    private static void writeHeader(Path resultsPath) throws IOException {
+        Files.write(resultsPath, CSV_HEADER.getBytes(StandardCharsets.UTF_8),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 
     private static String toMillis(long nanos) {
@@ -237,6 +282,31 @@ public final class EmbeddedBaselineBenchmark {
             for (Path item : items) {
                 Files.deleteIfExists(item);
             }
+        }
+    }
+
+    private static Path parentOf(Path path) {
+        Path parent = path.getParent();
+        if (parent == null) {
+            return Paths.get(".");
+        }
+        return parent;
+    }
+
+    private static final class BenchmarkResult {
+        private final String runType;
+        private final int iteration;
+        private final int rows;
+        private long insertNanos;
+        private long lookupNanos;
+        private long updateNanos;
+        private long scanNanos;
+        private long totalNanos;
+
+        private BenchmarkResult(String runType, int iteration, int rows) {
+            this.runType = runType;
+            this.iteration = iteration;
+            this.rows = rows;
         }
     }
 

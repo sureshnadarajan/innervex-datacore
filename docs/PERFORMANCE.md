@@ -85,14 +85,21 @@ The repository includes a first embedded benchmark target:
 ant datacore-embedded-benchmark
 ```
 
-The benchmark creates a local database under `generated/performance/`, runs a
-small insert, lookup, update, and grouped scan workload, then prints timing
-results. It also appends each run to `generated/performance/results.csv` so
-local baseline history can be compared over time. The default row count is
-intentionally small so contributors can run it quickly during development.
+The benchmark creates a local database under `generated/performance/`, runs
+warmup and measured iterations of a small insert, lookup, update, and grouped
+scan workload, then prints timing results. It also appends measured iterations
+to `generated/performance/results.csv` so local baseline history can be
+compared over time. The default row count is intentionally small so
+contributors can run it quickly during development.
 
 To run a larger local sample:
 
 ```sh
 ant -Ddatacore.benchmark.rows=50000 datacore-embedded-benchmark
+```
+
+To change the number of measured iterations:
+
+```sh
+ant -Ddatacore.benchmark.iterations=5 datacore-embedded-benchmark
 ```

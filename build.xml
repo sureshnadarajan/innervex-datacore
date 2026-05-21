@@ -35,6 +35,8 @@
   <!-- Public api -->
   <property file="${javadoctools.dir}/publishedapi.ant"/>
   <property name="datacore.benchmark.rows" value="5000"/>
+  <property name="datacore.benchmark.warmup" value="1"/>
+  <property name="datacore.benchmark.iterations" value="3"/>
   <property name="datacore.benchmark.results" value="${generated.dir}/performance/results.csv"/>
 
    <!-- You can override this property in local.properties to fetch from an alternative location -->
@@ -101,6 +103,8 @@
         <pathelement location="${derby.jar.dir}/derby.jar"/>
       </classpath>
       <sysproperty key="datacore.benchmark.rows" value="${datacore.benchmark.rows}"/>
+      <sysproperty key="datacore.benchmark.warmup" value="${datacore.benchmark.warmup}"/>
+      <sysproperty key="datacore.benchmark.iterations" value="${datacore.benchmark.iterations}"/>
       <sysproperty key="datacore.benchmark.db" value="${generated.dir}/performance/embedded-baseline-db"/>
       <sysproperty key="datacore.benchmark.results" value="${datacore.benchmark.results}"/>
     </java>
