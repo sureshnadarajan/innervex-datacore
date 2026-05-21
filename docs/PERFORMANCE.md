@@ -125,6 +125,16 @@ The insert-heavy workload creates the table and measures only the batch insert
 phase. This gives DataCore a simple write-throughput baseline before adding
 deeper storage-engine changes.
 
+To run the update-heavy workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=update-heavy datacore-embedded-benchmark
+```
+
+The update-heavy workload loads the table, then measures updates across all
+rows. This helps track write cost for existing records separately from initial
+data loading.
+
 To run the indexed range-scan workload:
 
 ```sh
