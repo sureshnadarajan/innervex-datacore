@@ -115,6 +115,16 @@ The read-heavy workload loads the table, then measures repeated primary-key
 lookups. The number of lookups can be changed with
 `-Ddatacore.benchmark.reads=100000`.
 
+To run the insert-heavy workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=insert-heavy datacore-embedded-benchmark
+```
+
+The insert-heavy workload creates the table and measures only the batch insert
+phase. This gives DataCore a simple write-throughput baseline before adding
+deeper storage-engine changes.
+
 To run the indexed range-scan workload:
 
 ```sh

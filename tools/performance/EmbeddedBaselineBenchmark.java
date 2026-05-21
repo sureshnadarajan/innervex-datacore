@@ -124,6 +124,10 @@ public final class EmbeddedBaselineBenchmark {
                     runType, iteration);
         }
 
+        if ("insert-heavy".equals(workload)) {
+            return runInsertHeavy(dbPath, workload, rows, runType, iteration);
+        }
+
         if ("range-scan".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     runType, iteration);
@@ -176,6 +180,28 @@ public final class EmbeddedBaselineBenchmark {
 
             result.lookupNanos = time(() -> readHeavyLookups(connection, rows,
                     readOperations));
+            connection.commit();
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
+    private static BenchmarkResult runInsertHeavy(Path dbPath, String workload,
+            int rows, String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, 0);
+            result.insertNanos = time(() -> insertRows(connection, rows));
             connection.commit();
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
