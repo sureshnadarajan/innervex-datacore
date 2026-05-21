@@ -9,6 +9,11 @@ This document is a practical map for contributors. It describes where the major
 parts live and how to approach modernization without breaking Derby-compatible
 behavior.
 
+The long-term purpose is to make DataCore an Innervex-owned and
+Innervex-maintained database foundation. Performance improvements should be
+driven by repeatable measurements, targeted engine work, and careful protection
+of database correctness.
+
 ## High-Level Shape
 
 ```text

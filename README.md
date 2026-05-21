@@ -13,6 +13,18 @@ enterprise maintenance, usability improvements, and Java platform evolution.
 This project is developed and maintained by Innervex Technologies Private
 Limited as part of the Innervex enterprise data platform work.
 
+## Project Mission
+
+The purpose of Innervex DataCore is to provide an Innervex-owned and
+Innervex-maintained embedded relational database foundation for Java platforms.
+The project starts from Apache Derby's mature codebase and aims to bring
+performance, developer experience, diagnostics, and long-term maintainability
+up to the standard expected for Innervex enterprise products.
+
+Performance work will be benchmark-led and compatibility-safe. The goal is to
+improve measurable behavior without casually breaking Derby-compatible SQL,
+JDBC, transaction, storage, or recovery semantics.
+
 ## Public Project Notice
 
 Innervex DataCore is an independent project based on Apache Derby. It is not an

@@ -3,6 +3,10 @@
 This roadmap is intentionally incremental. The project starts from Apache Derby
 10.17.1.0 and keeps compatibility as the baseline.
 
+The strategic goal is to create an Innervex-owned and Innervex-maintained
+embedded database foundation, with performance brought up through measurement,
+targeted fixes, and careful modernization.
+
 ## Phase 1: Project Foundation
 
 - Keep the Ant build working
@@ -25,6 +29,7 @@ This roadmap is intentionally incremental. The project starts from Apache Derby
 - Identify lock contention cases
 - Measure embedded and client/server workloads
 - Compare Derby behavior against H2, PostgreSQL, and Firebird where useful
+- Establish baseline performance targets for Innervex product workloads
 
 ## Phase 4: Safe Modernization
 
@@ -32,6 +37,8 @@ This roadmap is intentionally incremental. The project starts from Apache Derby
 - Improve diagnostics and logging
 - Modernize build/test tooling carefully
 - Keep JDBC and SQL compatibility intact
+- Prioritize changes that improve measurable throughput, latency, startup time,
+  memory use, or operational visibility
 
 ## Phase 5: Engine Research
 
