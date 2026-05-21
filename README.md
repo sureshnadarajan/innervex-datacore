@@ -2,6 +2,8 @@
 
 # Innervex DataCore
 
+[![Ant Build](https://github.com/sureshnadarajan/innervex-datacore/actions/workflows/ant-build.yml/badge.svg)](https://github.com/sureshnadarajan/innervex-datacore/actions/workflows/ant-build.yml)
+
 Enterprise-grade embedded relational database technology for Java platforms,
 based on Apache Derby.
 
