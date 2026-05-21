@@ -7,6 +7,8 @@ The strategic goal is to create an Innervex-owned and Innervex-maintained
 embedded database foundation, with performance brought up through measurement,
 targeted fixes, and careful modernization.
 
+The performance plan is documented in `docs/PERFORMANCE.md`.
+
 ## Phase 1: Project Foundation
 
 - Keep the Ant build working

@@ -25,6 +25,9 @@ Performance work will be benchmark-led and compatibility-safe. The goal is to
 improve measurable behavior without casually breaking Derby-compatible SQL,
 JDBC, transaction, storage, or recovery semantics.
 
+See [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) for the project performance
+plan.
+
 ## Public Project Notice
 
 Innervex DataCore is an independent project based on Apache Derby. It is not an
@@ -46,6 +49,9 @@ Apache licensing, notices, and source attribution are preserved in `LICENSE`,
 
 For a contributor-oriented map of the codebase, see
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+For the performance direction, see
+[`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
 
 ## Build
 
