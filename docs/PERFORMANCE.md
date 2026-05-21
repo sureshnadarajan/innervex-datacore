@@ -76,3 +76,22 @@ repeatable benchmark baseline that can answer:
 - Which improvements are safe to make without breaking compatibility?
 
 Once this baseline exists, optimization work can move with confidence.
+
+## Current Baseline Harness
+
+The repository includes a first embedded benchmark target:
+
+```sh
+ant datacore-embedded-benchmark
+```
+
+The benchmark creates a local database under `generated/performance/`, runs a
+small insert, lookup, update, and grouped scan workload, then prints timing
+results. The default row count is intentionally small so contributors can run it
+quickly during development.
+
+To run a larger local sample:
+
+```sh
+ant -Ddatacore.benchmark.rows=50000 datacore-embedded-benchmark
+```

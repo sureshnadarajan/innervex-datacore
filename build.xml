@@ -34,6 +34,7 @@
   <property file="${properties.dir}/sane${sanity}.properties"/>
   <!-- Public api -->
   <property file="${javadoctools.dir}/publishedapi.ant"/>
+  <property name="datacore.benchmark.rows" value="5000"/>
 
    <!-- You can override this property in local.properties to fetch from an alternative location -->
    <property name="javasedoc.url" value="https://docs.oracle.com/javase/9/docs/api"/>
@@ -80,6 +81,28 @@
       depends="demo,testing,runmessagecheck"
       description="Compile all of the source, including tests as well as production code."
   />
+  <target
+      name="datacore-embedded-benchmark"
+      depends="buildjars"
+      description="Run a small embedded DataCore baseline benchmark."
+  >
+    <mkdir dir="${out.dir}/performance"/>
+    <javac
+        srcdir="${basedir}/tools/performance"
+        destdir="${out.dir}/performance"
+        includeantruntime="false"
+        release="9"
+    />
+    <java classname="datacore.performance.EmbeddedBaselineBenchmark" fork="true" failonerror="true">
+      <classpath>
+        <pathelement location="${out.dir}/performance"/>
+        <pathelement location="${derby.jar.dir}/derbyshared.jar"/>
+        <pathelement location="${derby.jar.dir}/derby.jar"/>
+      </classpath>
+      <sysproperty key="datacore.benchmark.rows" value="${datacore.benchmark.rows}"/>
+      <sysproperty key="datacore.benchmark.db" value="${generated.dir}/performance/embedded-baseline-db"/>
+    </java>
+  </target>
 
 <!-- ==================================================================== -->
 <!--                       Initialize targets                             -->

@@ -19,7 +19,7 @@ The purpose of Innervex DataCore is to provide an Innervex-owned and
 Innervex-maintained embedded relational database foundation for Java platforms.
 The project starts from Apache Derby's mature codebase and aims to bring
 performance, developer experience, diagnostics, and long-term maintainability
-up to the standard expected for Innervex enterprise products.
+up to the standard expected from enterprise-grade embedded database software.
 
 Performance work will be benchmark-led and compatibility-safe. The goal is to
 improve measurable behavior without casually breaking Derby-compatible SQL,
@@ -65,6 +65,12 @@ The main generated product jars are created under `jars/sane/`.
 
 `sane` is Derby's development build flavor. It keeps Derby sanity checks
 enabled so internal problems are easier to catch while working on the engine.
+
+Run the first embedded performance baseline with:
+
+```sh
+ant datacore-embedded-benchmark
+```
 
 ## NetBeans
 
