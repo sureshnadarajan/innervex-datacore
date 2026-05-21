@@ -18,15 +18,18 @@
 package datacore.performance;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +37,10 @@ import java.util.stream.Stream;
 public final class EmbeddedBaselineBenchmark {
     private static final String ROWS_PROPERTY = "datacore.benchmark.rows";
     private static final String DB_PROPERTY = "datacore.benchmark.db";
+    private static final String RESULTS_PROPERTY = "datacore.benchmark.results";
+    private static final String CSV_HEADER =
+            "timestamp,rows,insert_ms,lookup_ms,update_ms,scan_ms,total_ms," +
+            "java_version,os_name,os_arch\n";
 
     private EmbeddedBaselineBenchmark() {
     }
@@ -42,9 +49,12 @@ public final class EmbeddedBaselineBenchmark {
         int rows = Integer.getInteger(ROWS_PROPERTY, 5000);
         Path dbPath = Paths.get(System.getProperty(DB_PROPERTY,
                 "generated/performance/embedded-baseline-db"));
+        Path resultsPath = Paths.get(System.getProperty(RESULTS_PROPERTY,
+                "generated/performance/results.csv"));
 
         deleteIfExists(dbPath);
         Files.createDirectories(dbPath.getParent());
+        Files.createDirectories(resultsPath.getParent());
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
 
@@ -64,6 +74,8 @@ public final class EmbeddedBaselineBenchmark {
             long totalNanos = System.nanoTime() - startNanos;
             printResults(rows, insertNanos, lookupNanos, updateNanos,
                     scanNanos, totalNanos);
+            appendResults(resultsPath, rows, insertNanos, lookupNanos,
+                    updateNanos, scanNanos, totalNanos);
         } finally {
             shutdown(dbPath);
         }
@@ -157,6 +169,48 @@ public final class EmbeddedBaselineBenchmark {
 
     private static void printMillis(String name, long nanos) {
         System.out.printf("%s=%.3f%n", name, nanos / 1_000_000.0d);
+    }
+
+    private static void appendResults(Path resultsPath, int rows,
+            long insertNanos, long lookupNanos, long updateNanos,
+            long scanNanos, long totalNanos) throws IOException {
+        boolean writeHeader = !Files.exists(resultsPath);
+        StringBuilder line = new StringBuilder();
+        line.append(Instant.now()).append(',')
+                .append(rows).append(',')
+                .append(toMillis(insertNanos)).append(',')
+                .append(toMillis(lookupNanos)).append(',')
+                .append(toMillis(updateNanos)).append(',')
+                .append(toMillis(scanNanos)).append(',')
+                .append(toMillis(totalNanos)).append(',')
+                .append(csv(System.getProperty("java.version"))).append(',')
+                .append(csv(System.getProperty("os.name"))).append(',')
+                .append(csv(System.getProperty("os.arch"))).append('\n');
+
+        if (writeHeader) {
+            Files.write(resultsPath, CSV_HEADER.getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }
+        Files.write(resultsPath, line.toString().getBytes(StandardCharsets.UTF_8),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+        System.out.println("results_csv=" + resultsPath.toAbsolutePath());
+    }
+
+    private static String toMillis(long nanos) {
+        return String.format("%.3f", nanos / 1_000_000.0d);
+    }
+
+    private static String csv(String value) {
+        if (value == null) {
+            return "";
+        }
+        String escaped = value.replace("\"", "\"\"");
+        if (escaped.contains(",") || escaped.contains("\"")
+                || escaped.contains("\n")) {
+            return "\"" + escaped + "\"";
+        }
+        return escaped;
     }
 
     private static void shutdown(Path dbPath) {

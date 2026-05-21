@@ -87,8 +87,9 @@ ant datacore-embedded-benchmark
 
 The benchmark creates a local database under `generated/performance/`, runs a
 small insert, lookup, update, and grouped scan workload, then prints timing
-results. The default row count is intentionally small so contributors can run it
-quickly during development.
+results. It also appends each run to `generated/performance/results.csv` so
+local baseline history can be compared over time. The default row count is
+intentionally small so contributors can run it quickly during development.
 
 To run a larger local sample:
 
