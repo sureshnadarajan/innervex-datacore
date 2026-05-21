@@ -35,21 +35,26 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class EmbeddedBaselineBenchmark {
+    private static final String WORKLOAD_PROPERTY = "datacore.benchmark.workload";
     private static final String ROWS_PROPERTY = "datacore.benchmark.rows";
+    private static final String READS_PROPERTY = "datacore.benchmark.reads";
     private static final String WARMUP_PROPERTY = "datacore.benchmark.warmup";
     private static final String ITERATIONS_PROPERTY =
             "datacore.benchmark.iterations";
     private static final String DB_PROPERTY = "datacore.benchmark.db";
     private static final String RESULTS_PROPERTY = "datacore.benchmark.results";
     private static final String CSV_HEADER =
-            "timestamp,run_type,iteration,rows,insert_ms,lookup_ms,update_ms," +
-            "scan_ms,total_ms,java_version,os_name,os_arch\n";
+            "timestamp,workload,run_type,iteration,rows,read_operations," +
+            "insert_ms,lookup_ms,update_ms,scan_ms,total_ms,java_version," +
+            "os_name,os_arch\n";
 
     private EmbeddedBaselineBenchmark() {
     }
 
     public static void main(String[] args) throws Exception {
+        String workload = System.getProperty(WORKLOAD_PROPERTY, "mixed");
         int rows = Integer.getInteger(ROWS_PROPERTY, 5000);
+        int readOperations = Integer.getInteger(READS_PROPERTY, rows * 10);
         int warmup = Integer.getInteger(WARMUP_PROPERTY, 1);
         int iterations = Integer.getInteger(ITERATIONS_PROPERTY, 3);
         Path dbPath = Paths.get(System.getProperty(DB_PROPERTY,
@@ -61,17 +66,22 @@ public final class EmbeddedBaselineBenchmark {
         Files.createDirectories(parentOf(resultsPath));
 
         System.out.println("Innervex DataCore embedded baseline");
+        System.out.println("workload=" + workload);
         System.out.println("rows=" + rows);
+        if ("read-heavy".equals(workload)) {
+            System.out.println("read_operations=" + readOperations);
+        }
         System.out.println("warmup=" + warmup);
         System.out.println("iterations=" + iterations);
 
         for (int iteration = 1; iteration <= warmup; iteration++) {
-            runOnce(dbPath, rows, "warmup", iteration);
+            runOnce(dbPath, workload, rows, readOperations, "warmup",
+                    iteration);
         }
 
         for (int iteration = 1; iteration <= iterations; iteration++) {
-            BenchmarkResult result = runOnce(dbPath, rows, "measured",
-                    iteration);
+            BenchmarkResult result = runOnce(dbPath, workload, rows,
+                    readOperations, "measured", iteration);
             printResults(result);
             appendResults(resultsPath, result);
         }
@@ -79,8 +89,25 @@ public final class EmbeddedBaselineBenchmark {
         System.out.println("results_csv=" + resultsPath.toAbsolutePath());
     }
 
-    private static BenchmarkResult runOnce(Path dbPath, int rows,
-            String runType, int iteration) throws Exception {
+    private static BenchmarkResult runOnce(Path dbPath, String workload,
+            int rows, int readOperations, String runType, int iteration)
+            throws Exception {
+        if ("mixed".equals(workload)) {
+            return runMixed(dbPath, workload, rows, readOperations, runType,
+                    iteration);
+        }
+
+        if ("read-heavy".equals(workload)) {
+            return runReadHeavy(dbPath, workload, rows, readOperations,
+                    runType, iteration);
+        }
+
+        throw new IllegalArgumentException("Unknown workload: " + workload);
+    }
+
+    private static BenchmarkResult runMixed(Path dbPath, String workload,
+            int rows, int readOperations, String runType, int iteration)
+            throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
@@ -89,13 +116,39 @@ public final class EmbeddedBaselineBenchmark {
             connection.setAutoCommit(false);
             createSchema(connection);
 
-            BenchmarkResult result = new BenchmarkResult(runType, iteration,
-                    rows);
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, 0);
             result.insertNanos = time(() -> insertRows(connection, rows));
             result.lookupNanos = time(() -> lookupRows(connection, rows));
             result.updateNanos = time(() -> updateRows(connection, rows));
             result.scanNanos = time(() -> scanRows(connection));
 
+            connection.commit();
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
+    private static BenchmarkResult runReadHeavy(Path dbPath, String workload,
+            int rows, int readOperations, String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, readOperations);
+            result.insertNanos = time(() -> insertRows(connection, rows));
+            connection.commit();
+
+            result.lookupNanos = time(() -> readHeavyLookups(connection, rows,
+                    readOperations));
             connection.commit();
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
@@ -148,6 +201,24 @@ public final class EmbeddedBaselineBenchmark {
         }
     }
 
+    private static void readHeavyLookups(Connection connection, int rows,
+            int readOperations) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "select name, amount from baseline_item where id = ?")) {
+            for (int index = 1; index <= readOperations; index++) {
+                int id = ((index * 31) % rows) + 1;
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (!resultSet.next()) {
+                        throw new SQLException("Missing row " + id);
+                    }
+                    resultSet.getString(1);
+                    resultSet.getInt(2);
+                }
+            }
+        }
+    }
+
     private static void updateRows(Connection connection, int rows)
             throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
@@ -179,6 +250,7 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static void printResults(BenchmarkResult result) {
+        System.out.println("workload=" + result.workload);
         System.out.println("measured_iteration=" + result.iteration);
         printMillis("insert_ms", result.insertNanos);
         printMillis("lookup_ms", result.lookupNanos);
@@ -196,9 +268,11 @@ public final class EmbeddedBaselineBenchmark {
         ensureResultsHeader(resultsPath);
         StringBuilder line = new StringBuilder();
         line.append(Instant.now()).append(',')
+                .append(result.workload).append(',')
                 .append(result.runType).append(',')
                 .append(result.iteration).append(',')
                 .append(result.rows).append(',')
+                .append(result.readOperations).append(',')
                 .append(toMillis(result.insertNanos)).append(',')
                 .append(toMillis(result.lookupNanos)).append(',')
                 .append(toMillis(result.updateNanos)).append(',')
@@ -294,19 +368,24 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static final class BenchmarkResult {
+        private final String workload;
         private final String runType;
         private final int iteration;
         private final int rows;
+        private final int readOperations;
         private long insertNanos;
         private long lookupNanos;
         private long updateNanos;
         private long scanNanos;
         private long totalNanos;
 
-        private BenchmarkResult(String runType, int iteration, int rows) {
+        private BenchmarkResult(String workload, String runType, int iteration,
+                int rows, int readOperations) {
+            this.workload = workload;
             this.runType = runType;
             this.iteration = iteration;
             this.rows = rows;
+            this.readOperations = readOperations;
         }
     }
 

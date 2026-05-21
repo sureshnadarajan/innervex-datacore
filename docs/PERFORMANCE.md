@@ -103,3 +103,13 @@ To change the number of measured iterations:
 ```sh
 ant -Ddatacore.benchmark.iterations=5 datacore-embedded-benchmark
 ```
+
+To run the read-heavy workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=read-heavy datacore-embedded-benchmark
+```
+
+The read-heavy workload loads the table, then measures repeated primary-key
+lookups. The number of lookups can be changed with
+`-Ddatacore.benchmark.reads=100000`.

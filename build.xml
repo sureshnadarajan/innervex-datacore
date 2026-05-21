@@ -34,7 +34,9 @@
   <property file="${properties.dir}/sane${sanity}.properties"/>
   <!-- Public api -->
   <property file="${javadoctools.dir}/publishedapi.ant"/>
+  <property name="datacore.benchmark.workload" value="mixed"/>
   <property name="datacore.benchmark.rows" value="5000"/>
+  <property name="datacore.benchmark.reads" value="50000"/>
   <property name="datacore.benchmark.warmup" value="1"/>
   <property name="datacore.benchmark.iterations" value="3"/>
   <property name="datacore.benchmark.results" value="${generated.dir}/performance/results.csv"/>
@@ -102,7 +104,9 @@
         <pathelement location="${derby.jar.dir}/derbyshared.jar"/>
         <pathelement location="${derby.jar.dir}/derby.jar"/>
       </classpath>
+      <sysproperty key="datacore.benchmark.workload" value="${datacore.benchmark.workload}"/>
       <sysproperty key="datacore.benchmark.rows" value="${datacore.benchmark.rows}"/>
+      <sysproperty key="datacore.benchmark.reads" value="${datacore.benchmark.reads}"/>
       <sysproperty key="datacore.benchmark.warmup" value="${datacore.benchmark.warmup}"/>
       <sysproperty key="datacore.benchmark.iterations" value="${datacore.benchmark.iterations}"/>
       <sysproperty key="datacore.benchmark.db" value="${generated.dir}/performance/embedded-baseline-db"/>
