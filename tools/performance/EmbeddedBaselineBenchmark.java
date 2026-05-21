@@ -136,6 +136,11 @@ public final class EmbeddedBaselineBenchmark {
             return runDeleteHeavy(dbPath, workload, rows, runType, iteration);
         }
 
+        if ("transaction-heavy".equals(workload)) {
+            return runTransactionHeavy(dbPath, workload, rows, runType,
+                    iteration);
+        }
+
         if ("range-scan".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     runType, iteration);
@@ -268,6 +273,29 @@ public final class EmbeddedBaselineBenchmark {
         }
     }
 
+    private static BenchmarkResult runTransactionHeavy(Path dbPath,
+            String workload, int rows, String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+            connection.commit();
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, 0);
+            result.insertNanos = time(() -> insertRowsWithCommitPerRow(
+                    connection, rows));
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
     private static BenchmarkResult runRangeScan(Path dbPath, String workload,
             int rows, int rangeOperations, String runType, int iteration)
             throws Exception {
@@ -318,6 +346,20 @@ public final class EmbeddedBaselineBenchmark {
                 statement.addBatch();
             }
             statement.executeBatch();
+        }
+    }
+
+    private static void insertRowsWithCommitPerRow(Connection connection,
+            int rows) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "insert into baseline_item(id, name, amount) values (?, ?, ?)")) {
+            for (int index = 1; index <= rows; index++) {
+                statement.setInt(1, index);
+                statement.setString(2, "item-" + index);
+                statement.setInt(3, index % 100);
+                statement.executeUpdate();
+                connection.commit();
+            }
         }
     }
 

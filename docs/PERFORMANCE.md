@@ -144,6 +144,16 @@ ant -Ddatacore.benchmark.workload=delete-heavy datacore-embedded-benchmark
 The delete-heavy workload loads the table, then measures deletes across all
 rows. This gives DataCore a separate baseline for row removal and index cleanup.
 
+To run the transaction-heavy workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=transaction-heavy datacore-embedded-benchmark
+```
+
+The transaction-heavy workload inserts rows using one commit per row. This
+measures transaction commit overhead, which is important for enterprise
+applications that perform many small units of work.
+
 To run the indexed range-scan workload:
 
 ```sh
