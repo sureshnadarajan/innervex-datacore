@@ -49,8 +49,8 @@ public final class EmbeddedBaselineBenchmark {
             "datacore.benchmark.gitCommit";
     private static final String CSV_HEADER =
             "timestamp,workload,run_type,iteration,rows,read_operations," +
-            "insert_ms,lookup_ms,update_ms,scan_ms,total_ms,java_version," +
-            "os_name,os_arch,git_commit\n";
+            "insert_ms,lookup_ms,update_ms,delete_ms,scan_ms,total_ms," +
+            "java_version,os_name,os_arch,git_commit\n";
 
     private EmbeddedBaselineBenchmark() {
     }
@@ -130,6 +130,10 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("update-heavy".equals(workload)) {
             return runUpdateHeavy(dbPath, workload, rows, runType, iteration);
+        }
+
+        if ("delete-heavy".equals(workload)) {
+            return runDeleteHeavy(dbPath, workload, rows, runType, iteration);
         }
 
         if ("range-scan".equals(workload)) {
@@ -239,6 +243,31 @@ public final class EmbeddedBaselineBenchmark {
         }
     }
 
+    private static BenchmarkResult runDeleteHeavy(Path dbPath, String workload,
+            int rows, String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, 0);
+            result.insertNanos = time(() -> insertRows(connection, rows));
+            connection.commit();
+
+            result.deleteNanos = time(() -> deleteRows(connection, rows));
+            connection.commit();
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
     private static BenchmarkResult runRangeScan(Path dbPath, String workload,
             int rows, int rangeOperations, String runType, int iteration)
             throws Exception {
@@ -339,6 +368,18 @@ public final class EmbeddedBaselineBenchmark {
         }
     }
 
+    private static void deleteRows(Connection connection, int rows)
+            throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "delete from baseline_item where id = ?")) {
+            for (int index = 1; index <= rows; index++) {
+                statement.setInt(1, index);
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        }
+    }
+
     private static void scanRows(Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
                 "select amount, count(*) from baseline_item " +
@@ -383,6 +424,7 @@ public final class EmbeddedBaselineBenchmark {
         printMillis("insert_ms", result.insertNanos);
         printMillis("lookup_ms", result.lookupNanos);
         printMillis("update_ms", result.updateNanos);
+        printMillis("delete_ms", result.deleteNanos);
         printMillis("scan_ms", result.scanNanos);
         printMillis("total_ms", result.totalNanos);
     }
@@ -400,6 +442,7 @@ public final class EmbeddedBaselineBenchmark {
         printStats("insert_ms", collect(results, Metric.INSERT));
         printStats("lookup_ms", collect(results, Metric.LOOKUP));
         printStats("update_ms", collect(results, Metric.UPDATE));
+        printStats("delete_ms", collect(results, Metric.DELETE));
         printStats("scan_ms", collect(results, Metric.SCAN));
         printStats("total_ms", collect(results, Metric.TOTAL));
     }
@@ -442,6 +485,7 @@ public final class EmbeddedBaselineBenchmark {
                 .append(toMillis(result.insertNanos)).append(',')
                 .append(toMillis(result.lookupNanos)).append(',')
                 .append(toMillis(result.updateNanos)).append(',')
+                .append(toMillis(result.deleteNanos)).append(',')
                 .append(toMillis(result.scanNanos)).append(',')
                 .append(toMillis(result.totalNanos)).append(',')
                 .append(csv(System.getProperty("java.version"))).append(',')
@@ -543,6 +587,7 @@ public final class EmbeddedBaselineBenchmark {
         private long insertNanos;
         private long lookupNanos;
         private long updateNanos;
+        private long deleteNanos;
         private long scanNanos;
         private long totalNanos;
         private String gitCommit = "unknown";
@@ -574,6 +619,12 @@ public final class EmbeddedBaselineBenchmark {
             @Override
             long value(BenchmarkResult result) {
                 return result.updateNanos;
+            }
+        },
+        DELETE {
+            @Override
+            long value(BenchmarkResult result) {
+                return result.deleteNanos;
             }
         },
         SCAN {

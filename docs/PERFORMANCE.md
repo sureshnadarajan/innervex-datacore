@@ -135,6 +135,15 @@ The update-heavy workload loads the table, then measures updates across all
 rows. This helps track write cost for existing records separately from initial
 data loading.
 
+To run the delete-heavy workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=delete-heavy datacore-embedded-benchmark
+```
+
+The delete-heavy workload loads the table, then measures deletes across all
+rows. This gives DataCore a separate baseline for row removal and index cleanup.
+
 To run the indexed range-scan workload:
 
 ```sh
