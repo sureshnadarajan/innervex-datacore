@@ -130,6 +130,14 @@ The suite runs mixed, read-heavy, update-heavy, delete-heavy,
 transaction-heavy, range-scan, concurrent-read, concurrent-mixed, and
 concurrent-transaction-mixed workloads.
 
+On macOS, the repository also provides helper commands that use the NetBeans
+Ant runtime when it is available:
+
+```sh
+bin/datacore-benchmark-suite
+bin/datacore-benchmark-report
+```
+
 To run the read-heavy workload:
 
 ```sh

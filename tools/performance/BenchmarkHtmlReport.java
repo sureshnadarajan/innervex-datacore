@@ -168,8 +168,8 @@ public final class BenchmarkHtmlReport {
         html.append("    <h2>Refresh This Report</h2>\n");
         html.append("    <p>Run benchmark workloads first, then regenerate this page ");
         html.append("from the accumulated CSV results.</p>\n");
-        html.append("    <code class=\"command\">ant datacore-benchmark-summary</code>\n");
-        html.append("    <code class=\"command\">ant datacore-benchmark-html-report</code>\n");
+        html.append("    <code class=\"command\">bin/datacore-benchmark-suite</code>\n");
+        html.append("    <code class=\"command\">bin/datacore-benchmark-report</code>\n");
         html.append("  </section>\n");
     }
 

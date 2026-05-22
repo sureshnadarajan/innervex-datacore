@@ -36,31 +36,39 @@
   <img class="brand" src="assets/ivx-datacore-logo.png" alt="Innervex DataCore logo">
   <p class="owner">Innervex Technologies Private Limited</p>
   <h1>Innervex DataCore Benchmark Report</h1>
-  <p class="meta">Generated 2026-05-22T01:42:24.536175Z from <code>generated/performance/results.csv</code>.</p>
+  <p class="meta">Generated 2026-05-22T02:08:13.935013Z from <code>generated/performance/results.csv</code>.</p>
   <h2>Total Time by Workload</h2>
   <div class="chart" aria-label="Total time by workload">
-    <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 59%"></div></div><div class="bar-value">436.222 ms</div></div>
-    <div class="bar-row"><div class="bar-label">transaction-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 66%"></div></div><div class="bar-value">481.494 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-read</div><div class="bar-track"><div class="bar-fill" style="width: 76%"></div></div><div class="bar-value">558.597 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 99%"></div></div><div class="bar-value">727.724 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div><div class="bar-value">734.579 ms</div></div>
+    <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 8%"></div></div><div class="bar-value">415.081 ms</div></div>
+    <div class="bar-row"><div class="bar-label">transaction-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">534.796 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-read</div><div class="bar-track"><div class="bar-fill" style="width: 12%"></div></div><div class="bar-value">595.837 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 15%"></div></div><div class="bar-value">737.078 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 18%"></div></div><div class="bar-value">881.567 ms</div></div>
+    <div class="bar-row"><div class="bar-label">mixed</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">559.004 ms</div></div>
+    <div class="bar-row"><div class="bar-label">read-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 13%"></div></div><div class="bar-value">624.590 ms</div></div>
+    <div class="bar-row"><div class="bar-label">update-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">485.871 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan</div><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div><div class="bar-value">4916.187 ms</div></div>
   </div>
   <h2>Latest Measured Results</h2>
   <table>
     <thead><tr><th>Workload</th><th>Rows</th><th>Reads</th><th>Insert ms</th><th>Lookup ms</th><th>Update ms</th><th>Delete ms</th><th>Scan ms</th><th>Total ms</th><th>Commit</th></tr></thead>
     <tbody>
-      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>106.028</td><td>0.000</td><td>0.000</td><td>174.988</td><td>0.000</td><td>436.222</td><td>9f29335ef645</td></tr>
-      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>317.299</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>481.494</td><td>57438be9e630</td></tr>
-      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>119.191</td><td>274.571</td><td>0.000</td><td>0.000</td><td>0.000</td><td>558.597</td><td>061069e30e14</td></tr>
-      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>96.504</td><td>469.010</td><td>229.464</td><td>0.000</td><td>0.000</td><td>727.724</td><td>156ce184ed6a</td></tr>
-      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>97.985</td><td>284.986</td><td>476.930</td><td>0.000</td><td>0.000</td><td>734.579</td><td>4b3b4e5a9b8a</td></tr>
+      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>101.995</td><td>0.000</td><td>0.000</td><td>174.658</td><td>0.000</td><td>415.081</td><td>3f65499f27d2</td></tr>
+      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>361.513</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>534.796</td><td>3f65499f27d2</td></tr>
+      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>117.754</td><td>282.556</td><td>0.000</td><td>0.000</td><td>0.000</td><td>595.837</td><td>3f65499f27d2</td></tr>
+      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>105.326</td><td>464.352</td><td>247.781</td><td>0.000</td><td>0.000</td><td>737.078</td><td>3f65499f27d2</td></tr>
+      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>108.169</td><td>397.924</td><td>599.924</td><td>0.000</td><td>0.000</td><td>881.567</td><td>3f65499f27d2</td></tr>
+      <tr><td>mixed</td><td>5000</td><td>0</td><td>109.657</td><td>67.415</td><td>182.700</td><td>0.000</td><td>29.620</td><td>559.004</td><td>3f65499f27d2</td></tr>
+      <tr><td>read-heavy</td><td>5000</td><td>50000</td><td>120.851</td><td>288.670</td><td>0.000</td><td>0.000</td><td>0.000</td><td>624.590</td><td>3f65499f27d2</td></tr>
+      <tr><td>update-heavy</td><td>5000</td><td>0</td><td>112.147</td><td>0.000</td><td>212.204</td><td>0.000</td><td>0.000</td><td>485.871</td><td>3f65499f27d2</td></tr>
+      <tr><td>range-scan</td><td>5000</td><td>5000</td><td>104.503</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4666.639</td><td>4916.187</td><td>3f65499f27d2</td></tr>
     </tbody>
   </table>
   <section class="note" aria-label="Refresh report">
     <h2>Refresh This Report</h2>
     <p>Run benchmark workloads first, then regenerate this page from the accumulated CSV results.</p>
-    <code class="command">ant datacore-benchmark-summary</code>
-    <code class="command">ant datacore-benchmark-html-report</code>
+    <code class="command">bin/datacore-benchmark-suite</code>
+    <code class="command">bin/datacore-benchmark-report</code>
   </section>
 </main>
 </body>
