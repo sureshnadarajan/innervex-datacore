@@ -126,6 +126,12 @@ public final class BenchmarkHtmlReport {
         html.append("border-radius: 999px; }\n");
         html.append("    .bar-value { color: #536176; font-variant-numeric: tabular-nums; ");
         html.append("text-align: right; }\n");
+        html.append("    .note { margin: 26px 0 0; padding: 18px; background: white; ");
+        html.append("border: 1px solid #d9e1ec; }\n");
+        html.append("    .note p { margin-bottom: 12px; }\n");
+        html.append("    .command { display: block; overflow-x: auto; padding: 12px 14px; ");
+        html.append("background: #071b35; color: #dff6ff; border-radius: 6px; ");
+        html.append("white-space: nowrap; }\n");
         html.append("    @media (max-width: 760px) { .bar-row { grid-template-columns: 1fr; ");
         html.append("gap: 6px; } .bar-value { text-align: left; } }\n");
         html.append("  </style>\n");
@@ -148,12 +154,23 @@ public final class BenchmarkHtmlReport {
         } else {
             appendTotalTimeChart(html, latestByWorkload);
             appendTable(html, latestByWorkload);
+            appendRefreshNote(html);
         }
 
         html.append("</main>\n");
         html.append("</body>\n");
         html.append("</html>\n");
         return html.toString();
+    }
+
+    private static void appendRefreshNote(StringBuilder html) {
+        html.append("  <section class=\"note\" aria-label=\"Refresh report\">\n");
+        html.append("    <h2>Refresh This Report</h2>\n");
+        html.append("    <p>Run benchmark workloads first, then regenerate this page ");
+        html.append("from the accumulated CSV results.</p>\n");
+        html.append("    <code class=\"command\">ant datacore-benchmark-summary</code>\n");
+        html.append("    <code class=\"command\">ant datacore-benchmark-html-report</code>\n");
+        html.append("  </section>\n");
     }
 
     private static void appendTotalTimeChart(StringBuilder html,

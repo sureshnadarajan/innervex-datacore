@@ -25,6 +25,9 @@
     .bar-track { height: 14px; background: #edf3fb; border-radius: 999px; overflow: hidden; }
     .bar-fill { height: 100%; background: #008ee8; border-radius: 999px; }
     .bar-value { color: #536176; font-variant-numeric: tabular-nums; text-align: right; }
+    .note { margin: 26px 0 0; padding: 18px; background: white; border: 1px solid #d9e1ec; }
+    .note p { margin-bottom: 12px; }
+    .command { display: block; overflow-x: auto; padding: 12px 14px; background: #071b35; color: #dff6ff; border-radius: 6px; white-space: nowrap; }
     @media (max-width: 760px) { .bar-row { grid-template-columns: 1fr; gap: 6px; } .bar-value { text-align: left; } }
   </style>
 </head>
@@ -33,7 +36,7 @@
   <img class="brand" src="assets/ivx-datacore-logo.png" alt="Innervex DataCore logo">
   <p class="owner">Innervex Technologies Private Limited</p>
   <h1>Innervex DataCore Benchmark Report</h1>
-  <p class="meta">Generated 2026-05-22T01:37:53.206515Z from <code>generated/performance/results.csv</code>.</p>
+  <p class="meta">Generated 2026-05-22T01:42:24.536175Z from <code>generated/performance/results.csv</code>.</p>
   <h2>Total Time by Workload</h2>
   <div class="chart" aria-label="Total time by workload">
     <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 59%"></div></div><div class="bar-value">436.222 ms</div></div>
@@ -53,6 +56,12 @@
       <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>97.985</td><td>284.986</td><td>476.930</td><td>0.000</td><td>0.000</td><td>734.579</td><td>4b3b4e5a9b8a</td></tr>
     </tbody>
   </table>
+  <section class="note" aria-label="Refresh report">
+    <h2>Refresh This Report</h2>
+    <p>Run benchmark workloads first, then regenerate this page from the accumulated CSV results.</p>
+    <code class="command">ant datacore-benchmark-summary</code>
+    <code class="command">ant datacore-benchmark-html-report</code>
+  </section>
 </main>
 </body>
 </html>
