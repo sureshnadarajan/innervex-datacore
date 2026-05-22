@@ -36,32 +36,32 @@
   <img class="brand" src="assets/ivx-datacore-logo.png" alt="Innervex DataCore logo">
   <p class="owner">Innervex Technologies Private Limited</p>
   <h1>Innervex DataCore Benchmark Report</h1>
-  <p class="meta">Generated 2026-05-22T02:08:13.935013Z from <code>generated/performance/results.csv</code>.</p>
+  <p class="meta">Generated 2026-05-22T02:22:17.045853Z from <code>generated/performance/results.csv</code>.</p>
   <h2>Total Time by Workload</h2>
   <div class="chart" aria-label="Total time by workload">
-    <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 8%"></div></div><div class="bar-value">415.081 ms</div></div>
-    <div class="bar-row"><div class="bar-label">transaction-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">534.796 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-read</div><div class="bar-track"><div class="bar-fill" style="width: 12%"></div></div><div class="bar-value">595.837 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 15%"></div></div><div class="bar-value">737.078 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 18%"></div></div><div class="bar-value">881.567 ms</div></div>
-    <div class="bar-row"><div class="bar-label">mixed</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">559.004 ms</div></div>
-    <div class="bar-row"><div class="bar-label">read-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 13%"></div></div><div class="bar-value">624.590 ms</div></div>
-    <div class="bar-row"><div class="bar-label">update-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">485.871 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan</div><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div><div class="bar-value">4916.187 ms</div></div>
+    <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">541.701 ms</div></div>
+    <div class="bar-row"><div class="bar-label">transaction-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">530.636 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-read</div><div class="bar-track"><div class="bar-fill" style="width: 12%"></div></div><div class="bar-value">601.407 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div><div class="bar-value">698.710 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 15%"></div></div><div class="bar-value">726.817 ms</div></div>
+    <div class="bar-row"><div class="bar-label">mixed</div><div class="bar-track"><div class="bar-fill" style="width: 12%"></div></div><div class="bar-value">584.324 ms</div></div>
+    <div class="bar-row"><div class="bar-label">read-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div><div class="bar-value">672.050 ms</div></div>
+    <div class="bar-row"><div class="bar-label">update-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 9%"></div></div><div class="bar-value">451.848 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan</div><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div><div class="bar-value">4857.039 ms</div></div>
   </div>
   <h2>Latest Measured Results</h2>
   <table>
     <thead><tr><th>Workload</th><th>Rows</th><th>Reads</th><th>Insert ms</th><th>Lookup ms</th><th>Update ms</th><th>Delete ms</th><th>Scan ms</th><th>Total ms</th><th>Commit</th></tr></thead>
     <tbody>
-      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>101.995</td><td>0.000</td><td>0.000</td><td>174.658</td><td>0.000</td><td>415.081</td><td>3f65499f27d2</td></tr>
-      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>361.513</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>534.796</td><td>3f65499f27d2</td></tr>
-      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>117.754</td><td>282.556</td><td>0.000</td><td>0.000</td><td>0.000</td><td>595.837</td><td>3f65499f27d2</td></tr>
-      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>105.326</td><td>464.352</td><td>247.781</td><td>0.000</td><td>0.000</td><td>737.078</td><td>3f65499f27d2</td></tr>
-      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>108.169</td><td>397.924</td><td>599.924</td><td>0.000</td><td>0.000</td><td>881.567</td><td>3f65499f27d2</td></tr>
-      <tr><td>mixed</td><td>5000</td><td>0</td><td>109.657</td><td>67.415</td><td>182.700</td><td>0.000</td><td>29.620</td><td>559.004</td><td>3f65499f27d2</td></tr>
-      <tr><td>read-heavy</td><td>5000</td><td>50000</td><td>120.851</td><td>288.670</td><td>0.000</td><td>0.000</td><td>0.000</td><td>624.590</td><td>3f65499f27d2</td></tr>
-      <tr><td>update-heavy</td><td>5000</td><td>0</td><td>112.147</td><td>0.000</td><td>212.204</td><td>0.000</td><td>0.000</td><td>485.871</td><td>3f65499f27d2</td></tr>
-      <tr><td>range-scan</td><td>5000</td><td>5000</td><td>104.503</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4666.639</td><td>4916.187</td><td>3f65499f27d2</td></tr>
+      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>137.864</td><td>0.000</td><td>0.000</td><td>174.893</td><td>0.000</td><td>541.701</td><td>3530d3df25ee</td></tr>
+      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>350.635</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>530.636</td><td>3530d3df25ee</td></tr>
+      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>111.946</td><td>296.532</td><td>0.000</td><td>0.000</td><td>0.000</td><td>601.407</td><td>3530d3df25ee</td></tr>
+      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>95.491</td><td>437.016</td><td>239.283</td><td>0.000</td><td>0.000</td><td>698.710</td><td>3530d3df25ee</td></tr>
+      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>114.431</td><td>294.030</td><td>472.647</td><td>0.000</td><td>0.000</td><td>726.817</td><td>3530d3df25ee</td></tr>
+      <tr><td>mixed</td><td>5000</td><td>0</td><td>114.721</td><td>73.683</td><td>191.360</td><td>0.000</td><td>26.222</td><td>584.324</td><td>3530d3df25ee</td></tr>
+      <tr><td>read-heavy</td><td>5000</td><td>50000</td><td>164.135</td><td>295.478</td><td>0.000</td><td>0.000</td><td>0.000</td><td>672.050</td><td>3530d3df25ee</td></tr>
+      <tr><td>update-heavy</td><td>5000</td><td>0</td><td>98.543</td><td>0.000</td><td>192.085</td><td>0.000</td><td>0.000</td><td>451.848</td><td>3530d3df25ee</td></tr>
+      <tr><td>range-scan</td><td>5000</td><td>5000</td><td>108.936</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4595.222</td><td>4857.039</td><td>3530d3df25ee</td></tr>
     </tbody>
   </table>
   <section class="note" aria-label="Refresh report">

@@ -72,6 +72,21 @@ Run the first embedded performance baseline with:
 ant datacore-embedded-benchmark
 ```
 
+Run the standard local benchmark suite and refresh the HTML report with:
+
+```sh
+bin/datacore-benchmark-suite
+```
+
+Refresh only the generated report with:
+
+```sh
+bin/datacore-benchmark-report
+```
+
+The report is published at
+[`docs/performance-report.html`](docs/performance-report.html).
+
 ## NetBeans
 
 Open the repository root directly in NetBeans:
