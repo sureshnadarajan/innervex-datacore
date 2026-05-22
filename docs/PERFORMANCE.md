@@ -246,3 +246,14 @@ ant -Ddatacore.benchmark.workload=range-scan-index-only datacore-embedded-benchm
 This query reads only the indexed `amount` column. Comparing it with
 `range-scan` helps show whether range-scan time is dominated by index
 traversal or by fetching full rows from the table.
+
+To isolate predicate evaluation from result-row materialization, run the
+count-only range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-count datacore-embedded-benchmark
+```
+
+This query returns one aggregate count per range operation, so it is useful
+for separating the cost of locating/counting matching rows from the cost of
+returning each row to the caller.

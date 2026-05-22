@@ -53,6 +53,9 @@ public final class EmbeddedBaselineBenchmark {
     private static final String RESULTS_PROPERTY = "datacore.benchmark.results";
     private static final String GIT_COMMIT_PROPERTY =
             "datacore.benchmark.gitCommit";
+    private static final String RANGE_PROJECTION_FULL = "full-row";
+    private static final String RANGE_PROJECTION_INDEX_ONLY = "index-only";
+    private static final String RANGE_PROJECTION_COUNT = "count";
     private static final String CSV_HEADER =
             "timestamp,workload,run_type,iteration,rows,read_operations," +
             "insert_ms,lookup_ms,update_ms,delete_ms,scan_ms,total_ms," +
@@ -96,8 +99,7 @@ public final class EmbeddedBaselineBenchmark {
             System.out.println("range_operations=" + rangeOperations);
             System.out.println("range_width=" + rangeWidth);
             System.out.println("range_projection="
-                    + ("range-scan-index-only".equals(workload)
-                    ? "index-only" : "full-row"));
+                    + rangeProjectionFor(workload));
         }
         System.out.println("warmup=" + warmup);
         System.out.println("iterations=" + iterations);
@@ -178,12 +180,18 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("range-scan".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, false, runType, iteration);
+                    rangeWidth, RANGE_PROJECTION_FULL, runType, iteration);
         }
 
         if ("range-scan-index-only".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, true, runType, iteration);
+                    rangeWidth, RANGE_PROJECTION_INDEX_ONLY, runType,
+                    iteration);
+        }
+
+        if ("range-scan-count".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_COUNT, runType, iteration);
         }
 
         throw new IllegalArgumentException("Unknown workload: " + workload);
@@ -191,7 +199,18 @@ public final class EmbeddedBaselineBenchmark {
 
     private static boolean isRangeScanWorkload(String workload) {
         return "range-scan".equals(workload)
-                || "range-scan-index-only".equals(workload);
+                || "range-scan-index-only".equals(workload)
+                || "range-scan-count".equals(workload);
+    }
+
+    private static String rangeProjectionFor(String workload) {
+        if ("range-scan-index-only".equals(workload)) {
+            return RANGE_PROJECTION_INDEX_ONLY;
+        }
+        if ("range-scan-count".equals(workload)) {
+            return RANGE_PROJECTION_COUNT;
+        }
+        return RANGE_PROJECTION_FULL;
     }
 
     private static BenchmarkResult runMixed(Path dbPath, String workload,
@@ -397,8 +416,9 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static BenchmarkResult runRangeScan(Path dbPath, String workload,
-            int rows, int rangeOperations, int rangeWidth, boolean indexOnly,
-            String runType, int iteration) throws Exception {
+            int rows, int rangeOperations, int rangeWidth,
+            String rangeProjection, String runType, int iteration)
+            throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
@@ -413,7 +433,7 @@ public final class EmbeddedBaselineBenchmark {
             connection.commit();
 
             result.scanNanos = time(() -> indexedRangeScans(connection,
-                    rangeOperations, rangeWidth, indexOnly));
+                    rangeOperations, rangeWidth, rangeProjection));
             connection.commit();
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
@@ -652,9 +672,15 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static void indexedRangeScans(Connection connection,
-            int rangeOperations, int rangeWidth, boolean indexOnly)
+            int rangeOperations, int rangeWidth, String rangeProjection)
             throws SQLException {
-        String sql = indexOnly
+        boolean indexOnly = RANGE_PROJECTION_INDEX_ONLY.equals(
+                rangeProjection);
+        boolean countOnly = RANGE_PROJECTION_COUNT.equals(rangeProjection);
+        String sql = countOnly
+                ? "select count(*) from baseline_item " +
+                "where amount between ? and ?"
+                : indexOnly
                 ? "select amount from baseline_item " +
                 "where amount between ? and ? order by amount"
                 : "select id, name, amount from baseline_item " +
@@ -667,7 +693,7 @@ public final class EmbeddedBaselineBenchmark {
                 statement.setInt(2, start + rangeWidth - 1);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        if (indexOnly) {
+                        if (countOnly || indexOnly) {
                             resultSet.getInt(1);
                         } else {
                             resultSet.getInt(1);
