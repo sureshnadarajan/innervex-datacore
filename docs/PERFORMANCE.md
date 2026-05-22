@@ -136,6 +136,16 @@ The concurrent-mixed workload loads the table, then runs one writer thread
 updating rows while the remaining threads perform primary-key reads. This gives
 DataCore a first locking and read/write concurrency baseline.
 
+To run the concurrent mixed transaction workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=concurrent-transaction-mixed datacore-embedded-benchmark
+```
+
+The concurrent-transaction-mixed workload runs reader threads while one writer
+updates rows using one commit per row. This combines locking pressure with
+small-transaction commit overhead.
+
 To run the insert-heavy workload:
 
 ```sh

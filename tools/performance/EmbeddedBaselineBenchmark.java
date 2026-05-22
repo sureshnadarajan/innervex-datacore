@@ -83,7 +83,8 @@ public final class EmbeddedBaselineBenchmark {
             System.out.println("read_operations=" + readOperations);
         }
         if ("concurrent-read".equals(workload)
-                || "concurrent-mixed".equals(workload)) {
+                || "concurrent-mixed".equals(workload)
+                || "concurrent-transaction-mixed".equals(workload)) {
             System.out.println("read_operations=" + readOperations);
             System.out.println("threads=" + threads);
         }
@@ -142,7 +143,12 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("concurrent-mixed".equals(workload)) {
             return runConcurrentMixed(dbPath, workload, rows, readOperations,
-                    threads, runType, iteration);
+                    threads, false, runType, iteration);
+        }
+
+        if ("concurrent-transaction-mixed".equals(workload)) {
+            return runConcurrentMixed(dbPath, workload, rows, readOperations,
+                    threads, true, runType, iteration);
         }
 
         if ("insert-heavy".equals(workload)) {
@@ -251,7 +257,7 @@ public final class EmbeddedBaselineBenchmark {
 
     private static BenchmarkResult runConcurrentMixed(Path dbPath,
             String workload, int rows, int readOperations, int threads,
-            String runType, int iteration)
+            boolean commitPerUpdate, String runType, int iteration)
             throws Exception {
         deleteIfExists(dbPath);
 
@@ -267,7 +273,7 @@ public final class EmbeddedBaselineBenchmark {
             connection.commit();
 
             ConcurrentMixedResult mixedResult = concurrentMixedOperations(url,
-                    rows, readOperations, threads);
+                    rows, readOperations, threads, commitPerUpdate);
             result.lookupNanos = mixedResult.lookupNanos;
             result.updateNanos = mixedResult.updateNanos;
             result.totalNanos = System.nanoTime() - startNanos;
@@ -524,7 +530,8 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static ConcurrentMixedResult concurrentMixedOperations(String url,
-            int rows, int readOperations, int threads) throws Exception {
+            int rows, int readOperations, int threads,
+            boolean commitPerUpdate) throws Exception {
         int readerThreads = Math.max(1, threads - 1);
         ExecutorService executor = Executors.newFixedThreadPool(
                 readerThreads + 1);
@@ -543,7 +550,8 @@ public final class EmbeddedBaselineBenchmark {
             }
 
             Future<Long> writerFuture = executor.submit(() ->
-                    timeSql(() -> updateRowsOnNewConnection(url, rows)));
+                    timeSql(() -> updateRowsOnNewConnection(url, rows,
+                            commitPerUpdate)));
 
             long maxReaderNanos = 0L;
             for (Future<Long> future : readerFutures) {
@@ -576,12 +584,28 @@ public final class EmbeddedBaselineBenchmark {
         }
     }
 
-    private static void updateRowsOnNewConnection(String url, int rows)
-            throws SQLException {
+    private static void updateRowsOnNewConnection(String url, int rows,
+            boolean commitPerUpdate) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            updateRows(connection, rows);
-            connection.commit();
+            if (commitPerUpdate) {
+                updateRowsWithCommitPerRow(connection, rows);
+            } else {
+                updateRows(connection, rows);
+                connection.commit();
+            }
+        }
+    }
+
+    private static void updateRowsWithCommitPerRow(Connection connection,
+            int rows) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "update baseline_item set amount = amount + 1 where id = ?")) {
+            for (int index = 1; index <= rows; index++) {
+                statement.setInt(1, index);
+                statement.executeUpdate();
+                connection.commit();
+            }
         }
     }
 
