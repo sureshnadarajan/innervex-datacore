@@ -19,6 +19,10 @@
     code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     .meta { margin-bottom: 24px; }
     .empty { padding: 18px; background: white; border: 1px solid #d9e1ec; }
+    .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0 0 26px; }
+    .tile { padding: 16px; background: white; border: 1px solid #d9e1ec; }
+    .tile-label { margin: 0 0 6px; color: #536176; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tile-value { margin: 0; color: #172033; font-size: 22px; font-weight: 800; }
     .chart { display: grid; gap: 12px; margin: 0 0 26px; padding: 18px; background: white; border: 1px solid #d9e1ec; }
     .bar-row { display: grid; grid-template-columns: minmax(190px, 260px) 1fr 88px; gap: 12px; align-items: center; }
     .bar-label { font-weight: 700; color: #25314a; }
@@ -28,7 +32,8 @@
     .note { margin: 26px 0 0; padding: 18px; background: white; border: 1px solid #d9e1ec; }
     .note p { margin-bottom: 12px; }
     .command { display: block; overflow-x: auto; padding: 12px 14px; background: #071b35; color: #dff6ff; border-radius: 6px; white-space: nowrap; }
-    @media (max-width: 760px) { .bar-row { grid-template-columns: 1fr; gap: 6px; } .bar-value { text-align: left; } }
+    @media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 760px) { .tiles, .bar-row { grid-template-columns: 1fr; gap: 6px; } .bar-value { text-align: left; } }
   </style>
 </head>
 <body>
@@ -36,7 +41,13 @@
   <img class="brand" src="assets/ivx-datacore-logo.png" alt="Innervex DataCore logo">
   <p class="owner">Innervex Technologies Private Limited</p>
   <h1>Innervex DataCore Benchmark Report</h1>
-  <p class="meta">Generated 2026-05-22T02:22:17.045853Z from <code>generated/performance/results.csv</code>.</p>
+  <p class="meta">Generated 2026-05-22T13:35:36.224365Z from <code>generated/performance/results.csv</code>.</p>
+  <section class="tiles" aria-label="Benchmark summary">
+    <article class="tile"><p class="tile-label">Workloads</p><p class="tile-value">9</p></article>
+    <article class="tile"><p class="tile-label">Fastest</p><p class="tile-value">update-heavy (451.848 ms)</p></article>
+    <article class="tile"><p class="tile-label">Slowest</p><p class="tile-value">range-scan (4857.039 ms)</p></article>
+    <article class="tile"><p class="tile-label">Commit</p><p class="tile-value">3530d3df25ee</p></article>
+  </section>
   <h2>Total Time by Workload</h2>
   <div class="chart" aria-label="Total time by workload">
     <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">541.701 ms</div></div>

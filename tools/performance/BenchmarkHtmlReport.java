@@ -115,6 +115,15 @@ public final class BenchmarkHtmlReport {
         html.append("    .meta { margin-bottom: 24px; }\n");
         html.append("    .empty { padding: 18px; background: white; ");
         html.append("border: 1px solid #d9e1ec; }\n");
+        html.append("    .tiles { display: grid; grid-template-columns: ");
+        html.append("repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0 0 26px; }\n");
+        html.append("    .tile { padding: 16px; background: white; ");
+        html.append("border: 1px solid #d9e1ec; }\n");
+        html.append("    .tile-label { margin: 0 0 6px; color: #536176; ");
+        html.append("font-size: 12px; font-weight: 800; letter-spacing: 0.08em; ");
+        html.append("text-transform: uppercase; }\n");
+        html.append("    .tile-value { margin: 0; color: #172033; ");
+        html.append("font-size: 22px; font-weight: 800; }\n");
         html.append("    .chart { display: grid; gap: 12px; margin: 0 0 26px; ");
         html.append("padding: 18px; background: white; border: 1px solid #d9e1ec; }\n");
         html.append("    .bar-row { display: grid; grid-template-columns: ");
@@ -132,8 +141,10 @@ public final class BenchmarkHtmlReport {
         html.append("    .command { display: block; overflow-x: auto; padding: 12px 14px; ");
         html.append("background: #071b35; color: #dff6ff; border-radius: 6px; ");
         html.append("white-space: nowrap; }\n");
-        html.append("    @media (max-width: 760px) { .bar-row { grid-template-columns: 1fr; ");
-        html.append("gap: 6px; } .bar-value { text-align: left; } }\n");
+        html.append("    @media (max-width: 900px) { .tiles { ");
+        html.append("grid-template-columns: repeat(2, minmax(0, 1fr)); } }\n");
+        html.append("    @media (max-width: 760px) { .tiles, .bar-row { ");
+        html.append("grid-template-columns: 1fr; gap: 6px; } .bar-value { text-align: left; } }\n");
         html.append("  </style>\n");
         html.append("</head>\n");
         html.append("<body>\n");
@@ -152,6 +163,7 @@ public final class BenchmarkHtmlReport {
             html.append("  <div class=\"empty\">No measured benchmark rows ");
             html.append("were found.</div>\n");
         } else {
+            appendSummaryTiles(html, latestByWorkload);
             appendTotalTimeChart(html, latestByWorkload);
             appendTable(html, latestByWorkload);
             appendRefreshNote(html);
@@ -161,6 +173,30 @@ public final class BenchmarkHtmlReport {
         html.append("</body>\n");
         html.append("</html>\n");
         return html.toString();
+    }
+
+    private static void appendSummaryTiles(StringBuilder html,
+            Map<String, ResultRow> latestByWorkload) {
+        ResultRow fastest = fastestRow(latestByWorkload);
+        ResultRow slowest = slowestRow(latestByWorkload);
+
+        html.append("  <section class=\"tiles\" aria-label=\"Benchmark summary\">\n");
+        appendTile(html, "Workloads", String.valueOf(latestByWorkload.size()));
+        appendTile(html, "Fastest", fastest.workload + " (" +
+                fastest.totalMs + " ms)");
+        appendTile(html, "Slowest", slowest.workload + " (" +
+                slowest.totalMs + " ms)");
+        appendTile(html, "Commit", shortCommit(firstCommit(latestByWorkload)));
+        html.append("  </section>\n");
+    }
+
+    private static void appendTile(StringBuilder html, String label,
+            String value) {
+        html.append("    <article class=\"tile\"><p class=\"tile-label\">")
+                .append(escapeHtml(label))
+                .append("</p><p class=\"tile-value\">")
+                .append(escapeHtml(value))
+                .append("</p></article>\n");
     }
 
     private static void appendRefreshNote(StringBuilder html) {
@@ -199,6 +235,37 @@ public final class BenchmarkHtmlReport {
             html.append("</div>\n");
         }
         html.append("  </div>\n");
+    }
+
+    private static ResultRow fastestRow(Map<String, ResultRow> rows) {
+        ResultRow fastest = null;
+        for (ResultRow row : rows.values()) {
+            if (fastest == null
+                    || parseDouble(row.totalMs) < parseDouble(fastest.totalMs)) {
+                fastest = row;
+            }
+        }
+        return fastest;
+    }
+
+    private static ResultRow slowestRow(Map<String, ResultRow> rows) {
+        ResultRow slowest = null;
+        for (ResultRow row : rows.values()) {
+            if (slowest == null
+                    || parseDouble(row.totalMs) > parseDouble(slowest.totalMs)) {
+                slowest = row;
+            }
+        }
+        return slowest;
+    }
+
+    private static String firstCommit(Map<String, ResultRow> rows) {
+        for (ResultRow row : rows.values()) {
+            if (row.gitCommit != null && row.gitCommit.length() > 0) {
+                return row.gitCommit;
+            }
+        }
+        return "unknown";
     }
 
     private static void appendTable(StringBuilder html,
