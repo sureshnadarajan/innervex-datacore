@@ -111,6 +111,14 @@ To print the latest result for each workload:
 ant datacore-benchmark-summary
 ```
 
+To create a local HTML report from the same CSV:
+
+```sh
+ant datacore-benchmark-html-report
+```
+
+The report is written to `generated/performance/report.html`.
+
 To run the read-heavy workload:
 
 ```sh

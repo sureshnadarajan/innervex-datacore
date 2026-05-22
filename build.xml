@@ -42,6 +42,7 @@
   <property name="datacore.benchmark.warmup" value="1"/>
   <property name="datacore.benchmark.iterations" value="3"/>
   <property name="datacore.benchmark.results" value="${generated.dir}/performance/results.csv"/>
+  <property name="datacore.benchmark.report" value="${generated.dir}/performance/report.html"/>
 
    <!-- You can override this property in local.properties to fetch from an alternative location -->
    <property name="javasedoc.url" value="https://docs.oracle.com/javase/9/docs/api"/>
@@ -134,6 +135,25 @@
         <pathelement location="${out.dir}/performance"/>
       </classpath>
       <sysproperty key="datacore.benchmark.results" value="${datacore.benchmark.results}"/>
+    </java>
+  </target>
+  <target
+      name="datacore-benchmark-html-report"
+      description="Generate an HTML DataCore benchmark report."
+  >
+    <mkdir dir="${out.dir}/performance"/>
+    <javac
+        srcdir="${basedir}/tools/performance"
+        destdir="${out.dir}/performance"
+        includeantruntime="false"
+        release="9"
+    />
+    <java classname="datacore.performance.BenchmarkHtmlReport" fork="true" failonerror="true">
+      <classpath>
+        <pathelement location="${out.dir}/performance"/>
+      </classpath>
+      <sysproperty key="datacore.benchmark.results" value="${datacore.benchmark.results}"/>
+      <sysproperty key="datacore.benchmark.report" value="${datacore.benchmark.report}"/>
     </java>
   </target>
 
