@@ -96,6 +96,7 @@ public final class BenchmarkHtmlReport {
         html.append("padding: 40px 24px; }\n");
         html.append("    h1 { margin: 0 0 8px; font-size: 34px; }\n");
         html.append("    p { margin: 0 0 22px; color: #536176; }\n");
+        html.append("    h2 { margin: 28px 0 12px; font-size: 20px; }\n");
         html.append("    table { width: 100%; border-collapse: collapse; ");
         html.append("background: white; border: 1px solid #d9e1ec; }\n");
         html.append("    th, td { padding: 10px 12px; border-bottom: ");
@@ -109,6 +110,19 @@ public final class BenchmarkHtmlReport {
         html.append("    .meta { margin-bottom: 24px; }\n");
         html.append("    .empty { padding: 18px; background: white; ");
         html.append("border: 1px solid #d9e1ec; }\n");
+        html.append("    .chart { display: grid; gap: 12px; margin: 0 0 26px; ");
+        html.append("padding: 18px; background: white; border: 1px solid #d9e1ec; }\n");
+        html.append("    .bar-row { display: grid; grid-template-columns: ");
+        html.append("minmax(190px, 260px) 1fr 88px; gap: 12px; align-items: center; }\n");
+        html.append("    .bar-label { font-weight: 700; color: #25314a; }\n");
+        html.append("    .bar-track { height: 14px; background: #edf3fb; ");
+        html.append("border-radius: 999px; overflow: hidden; }\n");
+        html.append("    .bar-fill { height: 100%; background: #008ee8; ");
+        html.append("border-radius: 999px; }\n");
+        html.append("    .bar-value { color: #536176; font-variant-numeric: tabular-nums; ");
+        html.append("text-align: right; }\n");
+        html.append("    @media (max-width: 760px) { .bar-row { grid-template-columns: 1fr; ");
+        html.append("gap: 6px; } .bar-value { text-align: left; } }\n");
         html.append("  </style>\n");
         html.append("</head>\n");
         html.append("<body>\n");
@@ -124,6 +138,7 @@ public final class BenchmarkHtmlReport {
             html.append("  <div class=\"empty\">No measured benchmark rows ");
             html.append("were found.</div>\n");
         } else {
+            appendTotalTimeChart(html, latestByWorkload);
             appendTable(html, latestByWorkload);
         }
 
@@ -133,8 +148,37 @@ public final class BenchmarkHtmlReport {
         return html.toString();
     }
 
+    private static void appendTotalTimeChart(StringBuilder html,
+            Map<String, ResultRow> latestByWorkload) {
+        double maxTotalMs = 0.0d;
+        for (ResultRow row : latestByWorkload.values()) {
+            maxTotalMs = Math.max(maxTotalMs, parseDouble(row.totalMs));
+        }
+
+        html.append("  <h2>Total Time by Workload</h2>\n");
+        html.append("  <div class=\"chart\" aria-label=\"Total time by workload\">\n");
+        for (ResultRow row : latestByWorkload.values()) {
+            double totalMs = parseDouble(row.totalMs);
+            int width = maxTotalMs <= 0.0d
+                    ? 0 : Math.max(2, (int) Math.round(totalMs * 100.0d / maxTotalMs));
+            html.append("    <div class=\"bar-row\">");
+            html.append("<div class=\"bar-label\">")
+                    .append(escapeHtml(row.workload))
+                    .append("</div>");
+            html.append("<div class=\"bar-track\"><div class=\"bar-fill\" style=\"width: ")
+                    .append(width)
+                    .append("%\"></div></div>");
+            html.append("<div class=\"bar-value\">")
+                    .append(escapeHtml(row.totalMs))
+                    .append(" ms</div>");
+            html.append("</div>\n");
+        }
+        html.append("  </div>\n");
+    }
+
     private static void appendTable(StringBuilder html,
             Map<String, ResultRow> latestByWorkload) {
+        html.append("  <h2>Latest Measured Results</h2>\n");
         html.append("  <table>\n");
         html.append("    <thead><tr>");
         appendHeader(html, "Workload");
@@ -190,6 +234,17 @@ public final class BenchmarkHtmlReport {
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;");
+    }
+
+    private static double parseDouble(String value) {
+        if (value == null || value.length() == 0) {
+            return 0.0d;
+        }
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException nfe) {
+            return 0.0d;
+        }
     }
 
     private static String displayPath(Path path) {
