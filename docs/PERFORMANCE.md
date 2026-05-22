@@ -126,6 +126,16 @@ connections and performs primary-key lookups from several reader threads. The
 number of lookups and threads can be changed with
 `-Ddatacore.benchmark.reads=100000 -Ddatacore.benchmark.threads=8`.
 
+To run the concurrent mixed read/write workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=concurrent-mixed datacore-embedded-benchmark
+```
+
+The concurrent-mixed workload loads the table, then runs one writer thread
+updating rows while the remaining threads perform primary-key reads. This gives
+DataCore a first locking and read/write concurrency baseline.
+
 To run the insert-heavy workload:
 
 ```sh

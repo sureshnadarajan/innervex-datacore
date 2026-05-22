@@ -82,7 +82,8 @@ public final class EmbeddedBaselineBenchmark {
         if ("read-heavy".equals(workload)) {
             System.out.println("read_operations=" + readOperations);
         }
-        if ("concurrent-read".equals(workload)) {
+        if ("concurrent-read".equals(workload)
+                || "concurrent-mixed".equals(workload)) {
             System.out.println("read_operations=" + readOperations);
             System.out.println("threads=" + threads);
         }
@@ -136,6 +137,11 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("concurrent-read".equals(workload)) {
             return runConcurrentRead(dbPath, workload, rows, readOperations,
+                    threads, runType, iteration);
+        }
+
+        if ("concurrent-mixed".equals(workload)) {
+            return runConcurrentMixed(dbPath, workload, rows, readOperations,
                     threads, runType, iteration);
         }
 
@@ -236,6 +242,34 @@ public final class EmbeddedBaselineBenchmark {
             long lookupStartNanos = System.nanoTime();
             concurrentReadLookups(url, rows, readOperations, threads);
             result.lookupNanos = System.nanoTime() - lookupStartNanos;
+            result.totalNanos = System.nanoTime() - startNanos;
+            return result;
+        } finally {
+            shutdown(dbPath);
+        }
+    }
+
+    private static BenchmarkResult runConcurrentMixed(Path dbPath,
+            String workload, int rows, int readOperations, int threads,
+            String runType, int iteration)
+            throws Exception {
+        deleteIfExists(dbPath);
+
+        String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
+        long startNanos = System.nanoTime();
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            createSchema(connection);
+
+            BenchmarkResult result = new BenchmarkResult(workload, runType,
+                    iteration, rows, readOperations);
+            result.insertNanos = time(() -> insertRows(connection, rows));
+            connection.commit();
+
+            ConcurrentMixedResult mixedResult = concurrentMixedOperations(url,
+                    rows, readOperations, threads);
+            result.lookupNanos = mixedResult.lookupNanos;
+            result.updateNanos = mixedResult.updateNanos;
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
         } finally {
@@ -489,6 +523,47 @@ public final class EmbeddedBaselineBenchmark {
         }
     }
 
+    private static ConcurrentMixedResult concurrentMixedOperations(String url,
+            int rows, int readOperations, int threads) throws Exception {
+        int readerThreads = Math.max(1, threads - 1);
+        ExecutorService executor = Executors.newFixedThreadPool(
+                readerThreads + 1);
+        List<Future<Long>> readerFutures = new ArrayList<>();
+        int baseReadsPerThread = readOperations / readerThreads;
+        int extraReads = readOperations % readerThreads;
+
+        try {
+            for (int thread = 0; thread < readerThreads; thread++) {
+                final int threadIndex = thread;
+                final int operations = baseReadsPerThread
+                        + (thread < extraReads ? 1 : 0);
+                readerFutures.add(executor.submit(() ->
+                        timeSql(() -> readLookupsOnNewConnection(url, rows,
+                                operations, threadIndex))));
+            }
+
+            Future<Long> writerFuture = executor.submit(() ->
+                    timeSql(() -> updateRowsOnNewConnection(url, rows)));
+
+            long maxReaderNanos = 0L;
+            for (Future<Long> future : readerFutures) {
+                maxReaderNanos = Math.max(maxReaderNanos,
+                        future.get().longValue());
+            }
+
+            return new ConcurrentMixedResult(maxReaderNanos,
+                    writerFuture.get().longValue());
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    private static long timeSql(SqlRunnable runnable) throws SQLException {
+        long startNanos = System.nanoTime();
+        runnable.run();
+        return System.nanoTime() - startNanos;
+    }
+
     private static void updateRows(Connection connection, int rows)
             throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(
@@ -498,6 +573,15 @@ public final class EmbeddedBaselineBenchmark {
                 statement.addBatch();
             }
             statement.executeBatch();
+        }
+    }
+
+    private static void updateRowsOnNewConnection(String url, int rows)
+            throws SQLException {
+        try (Connection connection = DriverManager.getConnection(url)) {
+            connection.setAutoCommit(false);
+            updateRows(connection, rows);
+            connection.commit();
         }
     }
 
@@ -709,6 +793,16 @@ public final class EmbeddedBaselineBenchmark {
             return Paths.get(".");
         }
         return parent;
+    }
+
+    private static final class ConcurrentMixedResult {
+        private final long lookupNanos;
+        private final long updateNanos;
+
+        private ConcurrentMixedResult(long lookupNanos, long updateNanos) {
+            this.lookupNanos = lookupNanos;
+            this.updateNanos = updateNanos;
+        }
     }
 
     private static final class BenchmarkResult {
