@@ -227,3 +227,11 @@ ant -Ddatacore.benchmark.workload=range-scan datacore-embedded-benchmark
 The range-scan workload loads the table, then repeatedly queries ranges over
 the indexed `amount` column. The number of range queries can be changed with
 `-Ddatacore.benchmark.ranges=10000`.
+
+The default range width is 10 distinct `amount` values. Since the benchmark
+loads values from 0 through 99, the default range returns about 10 percent of
+the table for each range query. Narrower ranges can be tested with:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan -Ddatacore.benchmark.rangeWidth=1 datacore-embedded-benchmark
+```
