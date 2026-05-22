@@ -91,8 +91,11 @@
   />
   <target
       name="datacore-embedded-benchmark"
-      depends="buildjars"
       description="Run a small embedded DataCore baseline benchmark."
+      depends="buildjars,datacore-embedded-benchmark-run"
+  />
+  <target
+      name="datacore-embedded-benchmark-run"
   >
     <mkdir dir="${out.dir}/performance"/>
     <javac
@@ -118,6 +121,44 @@
       <sysproperty key="datacore.benchmark.results" value="${datacore.benchmark.results}"/>
       <sysproperty key="datacore.benchmark.gitCommit" value="${changenumber}"/>
     </java>
+  </target>
+  <target
+      name="datacore-benchmark-suite"
+      depends="buildjars"
+      description="Run the standard DataCore benchmark suite and refresh the HTML report."
+  >
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="mixed"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="read-heavy"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="update-heavy"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="delete-heavy"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="transaction-heavy"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="range-scan"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="concurrent-read"/>
+      <param name="datacore.benchmark.threads" value="8"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="concurrent-mixed"/>
+      <param name="datacore.benchmark.threads" value="8"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="concurrent-transaction-mixed"/>
+      <param name="datacore.benchmark.threads" value="8"/>
+    </antcall>
+    <antcall target="datacore-benchmark-summary"/>
+    <antcall target="datacore-benchmark-html-report"/>
   </target>
   <target
       name="datacore-benchmark-summary"

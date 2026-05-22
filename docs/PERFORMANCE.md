@@ -120,6 +120,16 @@ ant datacore-benchmark-html-report
 The report is written to `docs/performance-report.html`, so it can be opened
 from the project welcome page and published with the project documentation.
 
+To run the standard local suite and refresh the report in one command:
+
+```sh
+ant datacore-benchmark-suite
+```
+
+The suite runs mixed, read-heavy, update-heavy, delete-heavy,
+transaction-heavy, range-scan, concurrent-read, concurrent-mixed, and
+concurrent-transaction-mixed workloads.
+
 To run the read-heavy workload:
 
 ```sh
