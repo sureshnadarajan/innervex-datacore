@@ -235,3 +235,14 @@ the table for each range query. Narrower ranges can be tested with:
 ```sh
 ant -Ddatacore.benchmark.workload=range-scan -Ddatacore.benchmark.rangeWidth=1 datacore-embedded-benchmark
 ```
+
+To isolate index traversal from full row fetching, run the index-only range
+scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-index-only datacore-embedded-benchmark
+```
+
+This query reads only the indexed `amount` column. Comparing it with
+`range-scan` helps show whether range-scan time is dominated by index
+traversal or by fetching full rows from the table.

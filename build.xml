@@ -148,6 +148,9 @@
       <param name="datacore.benchmark.workload" value="range-scan"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="range-scan-index-only"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="concurrent-read"/>
       <param name="datacore.benchmark.threads" value="8"/>
     </antcall>

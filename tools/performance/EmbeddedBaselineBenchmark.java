@@ -92,9 +92,12 @@ public final class EmbeddedBaselineBenchmark {
             System.out.println("read_operations=" + readOperations);
             System.out.println("threads=" + threads);
         }
-        if ("range-scan".equals(workload)) {
+        if (isRangeScanWorkload(workload)) {
             System.out.println("range_operations=" + rangeOperations);
             System.out.println("range_width=" + rangeWidth);
+            System.out.println("range_projection="
+                    + ("range-scan-index-only".equals(workload)
+                    ? "index-only" : "full-row"));
         }
         System.out.println("warmup=" + warmup);
         System.out.println("iterations=" + iterations);
@@ -175,10 +178,20 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("range-scan".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, runType, iteration);
+                    rangeWidth, false, runType, iteration);
+        }
+
+        if ("range-scan-index-only".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, true, runType, iteration);
         }
 
         throw new IllegalArgumentException("Unknown workload: " + workload);
+    }
+
+    private static boolean isRangeScanWorkload(String workload) {
+        return "range-scan".equals(workload)
+                || "range-scan-index-only".equals(workload);
     }
 
     private static BenchmarkResult runMixed(Path dbPath, String workload,
@@ -384,8 +397,8 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static BenchmarkResult runRangeScan(Path dbPath, String workload,
-            int rows, int rangeOperations, int rangeWidth, String runType,
-            int iteration) throws Exception {
+            int rows, int rangeOperations, int rangeWidth, boolean indexOnly,
+            String runType, int iteration) throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
@@ -400,7 +413,7 @@ public final class EmbeddedBaselineBenchmark {
             connection.commit();
 
             result.scanNanos = time(() -> indexedRangeScans(connection,
-                    rangeOperations, rangeWidth));
+                    rangeOperations, rangeWidth, indexOnly));
             connection.commit();
             result.totalNanos = System.nanoTime() - startNanos;
             return result;
@@ -639,10 +652,14 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static void indexedRangeScans(Connection connection,
-            int rangeOperations, int rangeWidth) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(
-                "select id, name, amount from baseline_item " +
-                "where amount between ? and ? order by amount, id")) {
+            int rangeOperations, int rangeWidth, boolean indexOnly)
+            throws SQLException {
+        String sql = indexOnly
+                ? "select amount from baseline_item " +
+                "where amount between ? and ? order by amount"
+                : "select id, name, amount from baseline_item " +
+                "where amount between ? and ? order by amount, id";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             int lastStart = Math.max(0, 100 - rangeWidth);
             for (int index = 0; index < rangeOperations; index++) {
                 int start = index % (lastStart + 1);
@@ -650,9 +667,13 @@ public final class EmbeddedBaselineBenchmark {
                 statement.setInt(2, start + rangeWidth - 1);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        resultSet.getInt(1);
-                        resultSet.getString(2);
-                        resultSet.getInt(3);
+                        if (indexOnly) {
+                            resultSet.getInt(1);
+                        } else {
+                            resultSet.getInt(1);
+                            resultSet.getString(2);
+                            resultSet.getInt(3);
+                        }
                     }
                 }
             }
