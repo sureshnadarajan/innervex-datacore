@@ -242,6 +242,7 @@
       <div class="actions" aria-label="Primary links">
         <a class="button primary" href="README.md">Read project overview</a>
         <a class="button" href="docs/ARCHITECTURE.md">View architecture</a>
+        <a class="button" href="docs/performance-report.html">Benchmark report</a>
         <a class="button" href="javadoc/index.html">Open public API</a>
         <a class="button" href="docs/html/getstart/index.html">Getting started</a>
       </div>
@@ -293,6 +294,40 @@
         project build script.
       </p>
       <code class="command">ant -quiet clobber buildsource buildjars</code>
+    </section>
+
+    <section id="performance">
+      <h2>Performance Baseline</h2>
+      <p>
+        DataCore performance work is tracked through repeatable embedded
+        benchmark workloads. The current local benchmark report can be opened
+        from this distribution after running the report target.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>Latest Report</h3>
+          <p>
+            View the latest generated benchmark table for read, write,
+            transaction, and concurrent workloads.
+          </p>
+          <p><a href="docs/performance-report.html">Open benchmark report</a></p>
+        </article>
+        <article class="card">
+          <h3>Performance Plan</h3>
+          <p>
+            See the measurement approach and compatibility rules used before
+            making engine-level performance changes.
+          </p>
+          <p><a href="docs/PERFORMANCE.md">Read performance plan</a></p>
+        </article>
+        <article class="card">
+          <h3>Regenerate Locally</h3>
+          <p>
+            Refresh the report after running benchmark workloads.
+          </p>
+          <code class="command">ant datacore-benchmark-html-report</code>
+        </article>
+      </div>
     </section>
 
     <section id="docs">

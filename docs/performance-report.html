@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Innervex DataCore Benchmark Report</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #172033; background: #f7f9fc; }
+    main { max-width: 1160px; margin: 0 auto; padding: 40px 24px; }
+    h1 { margin: 0 0 8px; font-size: 34px; }
+    p { margin: 0 0 22px; color: #536176; }
+    table { width: 100%; border-collapse: collapse; background: white; border: 1px solid #d9e1ec; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #e5ebf3; text-align: right; }
+    th { background: #edf3fb; color: #25314a; font-weight: 700; }
+    th:first-child, td:first-child { text-align: left; }
+    tr:last-child td { border-bottom: 0; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .meta { margin-bottom: 24px; }
+    .empty { padding: 18px; background: white; border: 1px solid #d9e1ec; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Innervex DataCore Benchmark Report</h1>
+  <p class="meta">Generated 2026-05-22T01:04:10.516848Z from <code>generated/performance/results.csv</code>.</p>
+  <table>
+    <thead><tr><th>Workload</th><th>Rows</th><th>Reads</th><th>Insert ms</th><th>Lookup ms</th><th>Update ms</th><th>Delete ms</th><th>Scan ms</th><th>Total ms</th><th>Commit</th></tr></thead>
+    <tbody>
+      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>106.028</td><td>0.000</td><td>0.000</td><td>174.988</td><td>0.000</td><td>436.222</td><td>9f29335ef645</td></tr>
+      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>317.299</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>481.494</td><td>57438be9e630</td></tr>
+      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>119.191</td><td>274.571</td><td>0.000</td><td>0.000</td><td>0.000</td><td>558.597</td><td>061069e30e14</td></tr>
+      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>96.504</td><td>469.010</td><td>229.464</td><td>0.000</td><td>0.000</td><td>727.724</td><td>156ce184ed6a</td></tr>
+      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>97.985</td><td>284.986</td><td>476.930</td><td>0.000</td><td>0.000</td><td>734.579</td><td>4b3b4e5a9b8a</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

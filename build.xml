@@ -42,7 +42,7 @@
   <property name="datacore.benchmark.warmup" value="1"/>
   <property name="datacore.benchmark.iterations" value="3"/>
   <property name="datacore.benchmark.results" value="${generated.dir}/performance/results.csv"/>
-  <property name="datacore.benchmark.report" value="${generated.dir}/performance/report.html"/>
+  <property name="datacore.benchmark.report" value="${basedir}/docs/performance-report.html"/>
 
    <!-- You can override this property in local.properties to fetch from an alternative location -->
    <property name="javasedoc.url" value="https://docs.oracle.com/javase/9/docs/api"/>

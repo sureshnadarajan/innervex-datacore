@@ -117,7 +117,8 @@ To create a local HTML report from the same CSV:
 ant datacore-benchmark-html-report
 ```
 
-The report is written to `generated/performance/report.html`.
+The report is written to `docs/performance-report.html`, so it can be opened
+from the project welcome page and published with the project documentation.
 
 To run the read-heavy workload:
 

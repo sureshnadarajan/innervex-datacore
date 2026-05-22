@@ -117,7 +117,7 @@ public final class BenchmarkHtmlReport {
         html.append("  <p class=\"meta\">Generated ")
                 .append(escapeHtml(Instant.now().toString()))
                 .append(" from <code>")
-                .append(escapeHtml(resultsPath.toAbsolutePath().toString()))
+                .append(escapeHtml(displayPath(resultsPath)))
                 .append("</code>.</p>\n");
 
         if (latestByWorkload.isEmpty()) {
@@ -190,6 +190,19 @@ public final class BenchmarkHtmlReport {
                 .replace("<", "&lt;")
                 .replace(">", "&gt;")
                 .replace("\"", "&quot;");
+    }
+
+    private static String displayPath(Path path) {
+        String normalized = path.toString().replace('\\', '/');
+        int generatedIndex = normalized.indexOf("/generated/");
+        if (generatedIndex >= 0) {
+            return normalized.substring(generatedIndex + 1);
+        }
+        int docsIndex = normalized.indexOf("/docs/");
+        if (docsIndex >= 0) {
+            return normalized.substring(docsIndex + 1);
+        }
+        return normalized;
     }
 
     private static Path parentOf(Path path) {
