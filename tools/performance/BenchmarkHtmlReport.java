@@ -94,8 +94,13 @@ public final class BenchmarkHtmlReport {
         html.append("background: #f7f9fc; }\n");
         html.append("    main { max-width: 1160px; margin: 0 auto; ");
         html.append("padding: 40px 24px; }\n");
+        html.append("    .brand { width: min(520px, 100%); height: auto; ");
+        html.append("display: block; margin: 0 0 24px; }\n");
         html.append("    h1 { margin: 0 0 8px; font-size: 34px; }\n");
         html.append("    p { margin: 0 0 22px; color: #536176; }\n");
+        html.append("    .owner { margin: 0 0 10px; color: #008ee8; ");
+        html.append("font-size: 13px; font-weight: 800; letter-spacing: 0.08em; ");
+        html.append("text-transform: uppercase; }\n");
         html.append("    h2 { margin: 28px 0 12px; font-size: 20px; }\n");
         html.append("    table { width: 100%; border-collapse: collapse; ");
         html.append("background: white; border: 1px solid #d9e1ec; }\n");
@@ -127,6 +132,9 @@ public final class BenchmarkHtmlReport {
         html.append("</head>\n");
         html.append("<body>\n");
         html.append("<main>\n");
+        html.append("  <img class=\"brand\" src=\"assets/ivx-datacore-logo.png\" ");
+        html.append("alt=\"Innervex DataCore logo\">\n");
+        html.append("  <p class=\"owner\">Innervex Technologies Private Limited</p>\n");
         html.append("  <h1>Innervex DataCore Benchmark Report</h1>\n");
         html.append("  <p class=\"meta\">Generated ")
                 .append(escapeHtml(Instant.now().toString()))
