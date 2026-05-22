@@ -118,6 +118,24 @@
       <sysproperty key="datacore.benchmark.gitCommit" value="${changenumber}"/>
     </java>
   </target>
+  <target
+      name="datacore-benchmark-summary"
+      description="Print the latest DataCore benchmark result for each workload."
+  >
+    <mkdir dir="${out.dir}/performance"/>
+    <javac
+        srcdir="${basedir}/tools/performance"
+        destdir="${out.dir}/performance"
+        includeantruntime="false"
+        release="9"
+    />
+    <java classname="datacore.performance.BenchmarkSummaryReporter" fork="true" failonerror="true">
+      <classpath>
+        <pathelement location="${out.dir}/performance"/>
+      </classpath>
+      <sysproperty key="datacore.benchmark.results" value="${datacore.benchmark.results}"/>
+    </java>
+  </target>
 
 <!-- ==================================================================== -->
 <!--                       Initialize targets                             -->

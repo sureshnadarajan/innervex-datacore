@@ -105,6 +105,12 @@ To change the number of measured iterations:
 ant -Ddatacore.benchmark.iterations=5 datacore-embedded-benchmark
 ```
 
+To print the latest result for each workload:
+
+```sh
+ant datacore-benchmark-summary
+```
+
 To run the read-heavy workload:
 
 ```sh
