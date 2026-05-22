@@ -54,6 +54,8 @@ public final class EmbeddedBaselineBenchmark {
     private static final String GIT_COMMIT_PROPERTY =
             "datacore.benchmark.gitCommit";
     private static final String RANGE_PROJECTION_FULL = "full-row";
+    private static final String RANGE_PROJECTION_UNORDERED =
+            "full-row-unordered";
     private static final String RANGE_PROJECTION_INDEX_ONLY = "index-only";
     private static final String RANGE_PROJECTION_COUNT = "count";
     private static final String CSV_HEADER =
@@ -183,6 +185,12 @@ public final class EmbeddedBaselineBenchmark {
                     rangeWidth, RANGE_PROJECTION_FULL, runType, iteration);
         }
 
+        if ("range-scan-unordered".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_UNORDERED, runType,
+                    iteration);
+        }
+
         if ("range-scan-index-only".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     rangeWidth, RANGE_PROJECTION_INDEX_ONLY, runType,
@@ -199,11 +207,15 @@ public final class EmbeddedBaselineBenchmark {
 
     private static boolean isRangeScanWorkload(String workload) {
         return "range-scan".equals(workload)
+                || "range-scan-unordered".equals(workload)
                 || "range-scan-index-only".equals(workload)
                 || "range-scan-count".equals(workload);
     }
 
     private static String rangeProjectionFor(String workload) {
+        if ("range-scan-unordered".equals(workload)) {
+            return RANGE_PROJECTION_UNORDERED;
+        }
         if ("range-scan-index-only".equals(workload)) {
             return RANGE_PROJECTION_INDEX_ONLY;
         }
@@ -677,12 +689,17 @@ public final class EmbeddedBaselineBenchmark {
         boolean indexOnly = RANGE_PROJECTION_INDEX_ONLY.equals(
                 rangeProjection);
         boolean countOnly = RANGE_PROJECTION_COUNT.equals(rangeProjection);
+        boolean unordered = RANGE_PROJECTION_UNORDERED.equals(
+                rangeProjection);
         String sql = countOnly
                 ? "select count(*) from baseline_item " +
                 "where amount between ? and ?"
                 : indexOnly
                 ? "select amount from baseline_item " +
                 "where amount between ? and ? order by amount"
+                : unordered
+                ? "select id, name, amount from baseline_item " +
+                "where amount between ? and ?"
                 : "select id, name, amount from baseline_item " +
                 "where amount between ? and ? order by amount, id";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

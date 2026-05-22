@@ -247,6 +247,16 @@ This query reads only the indexed `amount` column. Comparing it with
 `range-scan` helps show whether range-scan time is dominated by index
 traversal or by fetching full rows from the table.
 
+To isolate the cost of explicit ordering from full-row range fetching, run the
+unordered full-row range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-unordered datacore-embedded-benchmark
+```
+
+This query fetches the same columns as `range-scan` but does not request
+`order by amount, id`.
+
 To isolate predicate evaluation from result-row materialization, run the
 count-only range scan workload:
 
