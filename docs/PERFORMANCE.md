@@ -277,6 +277,16 @@ ant -Ddatacore.benchmark.workload=range-scan-key-columns datacore-embedded-bench
 This query uses the `(amount, id)` index and returns only `id` and `amount`,
 leaving out the `name` string column returned by the full-row range scans.
 
+To isolate the cost of returning only the string payload, run the name-column
+range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-name-column datacore-embedded-benchmark
+```
+
+This query uses the `(amount, id)` index and returns only `name`, leaving out
+the integer columns returned by the full-row range scans.
+
 To isolate predicate evaluation from result-row materialization, run the
 count-only range scan workload:
 
