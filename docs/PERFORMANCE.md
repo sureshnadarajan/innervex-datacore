@@ -297,6 +297,16 @@ ant -Ddatacore.benchmark.workload=range-scan-name-no-read datacore-embedded-benc
 This query uses the same SQL as `range-scan-name-column`, but advances through
 the result rows without calling `getString()` on the returned `name` column.
 
+To isolate the cost of returning many rows without carrying table column data,
+run the constant-row range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-constant-row datacore-embedded-benchmark
+```
+
+This query uses the `(amount, id)` index and returns the constant value `1` for
+each matching row.
+
 To isolate predicate evaluation from result-row materialization, run the
 count-only range scan workload:
 

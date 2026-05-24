@@ -160,6 +160,9 @@
       <param name="datacore.benchmark.workload" value="range-scan-name-no-read"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="range-scan-constant-row"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="range-scan-unordered"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
