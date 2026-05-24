@@ -56,6 +56,7 @@ public final class EmbeddedBaselineBenchmark {
     private static final String RANGE_PROJECTION_FULL = "full-row";
     private static final String RANGE_PROJECTION_UNORDERED =
             "full-row-unordered";
+    private static final String RANGE_PROJECTION_KEY_COLUMNS = "key-columns";
     private static final String RANGE_PROJECTION_INDEX_ONLY = "index-only";
     private static final String RANGE_PROJECTION_COUNT = "count";
     private static final String RANGE_INDEX_AMOUNT = "amount";
@@ -195,6 +196,12 @@ public final class EmbeddedBaselineBenchmark {
                     iteration);
         }
 
+        if ("range-scan-key-columns".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_KEY_COLUMNS, true, runType,
+                    iteration);
+        }
+
         if ("range-scan-unordered".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     rangeWidth, RANGE_PROJECTION_UNORDERED, false, runType,
@@ -219,6 +226,7 @@ public final class EmbeddedBaselineBenchmark {
     private static boolean isRangeScanWorkload(String workload) {
         return "range-scan".equals(workload)
                 || "range-scan-composite-index".equals(workload)
+                || "range-scan-key-columns".equals(workload)
                 || "range-scan-unordered".equals(workload)
                 || "range-scan-index-only".equals(workload)
                 || "range-scan-count".equals(workload);
@@ -227,6 +235,9 @@ public final class EmbeddedBaselineBenchmark {
     private static String rangeProjectionFor(String workload) {
         if ("range-scan-unordered".equals(workload)) {
             return RANGE_PROJECTION_UNORDERED;
+        }
+        if ("range-scan-key-columns".equals(workload)) {
+            return RANGE_PROJECTION_KEY_COLUMNS;
         }
         if ("range-scan-index-only".equals(workload)) {
             return RANGE_PROJECTION_INDEX_ONLY;
@@ -239,6 +250,9 @@ public final class EmbeddedBaselineBenchmark {
 
     private static String rangeIndexFor(String workload) {
         if ("range-scan-composite-index".equals(workload)) {
+            return RANGE_INDEX_AMOUNT_ID;
+        }
+        if ("range-scan-key-columns".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
         }
         return RANGE_INDEX_AMOUNT;
@@ -721,12 +735,17 @@ public final class EmbeddedBaselineBenchmark {
         boolean countOnly = RANGE_PROJECTION_COUNT.equals(rangeProjection);
         boolean unordered = RANGE_PROJECTION_UNORDERED.equals(
                 rangeProjection);
+        boolean keyColumns = RANGE_PROJECTION_KEY_COLUMNS.equals(
+                rangeProjection);
         String sql = countOnly
                 ? "select count(*) from baseline_item " +
                 "where amount between ? and ?"
                 : indexOnly
                 ? "select amount from baseline_item " +
                 "where amount between ? and ? order by amount"
+                : keyColumns
+                ? "select id, amount from baseline_item " +
+                "where amount between ? and ? order by amount, id"
                 : unordered
                 ? "select id, name, amount from baseline_item " +
                 "where amount between ? and ?"
@@ -742,6 +761,9 @@ public final class EmbeddedBaselineBenchmark {
                     while (resultSet.next()) {
                         if (countOnly || indexOnly) {
                             resultSet.getInt(1);
+                        } else if (keyColumns) {
+                            resultSet.getInt(1);
+                            resultSet.getInt(2);
                         } else {
                             resultSet.getInt(1);
                             resultSet.getString(2);
