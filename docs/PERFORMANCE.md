@@ -267,6 +267,17 @@ ant -Ddatacore.benchmark.workload=range-scan-composite-index datacore-embedded-b
 This query uses the same SQL as `range-scan`, but creates the benchmark table
 with an `(amount, id)` index instead of the single-column `amount` index.
 
+To test full-row range scan performance when all returned columns are available
+from the range index, run the full-covering-index workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-full-covering-index datacore-embedded-benchmark
+```
+
+This query uses the same SQL as `range-scan-composite-index`, but creates an
+`(amount, id, name)` index that covers every returned column in
+`baseline_item`.
+
 To isolate the cost of returning the string payload, run the key-column range
 scan workload:
 

@@ -54,6 +54,8 @@ public final class EmbeddedBaselineBenchmark {
     private static final String GIT_COMMIT_PROPERTY =
             "datacore.benchmark.gitCommit";
     private static final String RANGE_PROJECTION_FULL = "full-row";
+    private static final String RANGE_PROJECTION_FULL_COVERING =
+            "full-row-covering-index";
     private static final String RANGE_PROJECTION_UNORDERED =
             "full-row-unordered";
     private static final String RANGE_PROJECTION_KEY_COLUMNS = "key-columns";
@@ -204,6 +206,12 @@ public final class EmbeddedBaselineBenchmark {
                     iteration);
         }
 
+        if ("range-scan-full-covering-index".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_FULL_COVERING,
+                    RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
+        }
+
         if ("range-scan-key-columns".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     rangeWidth, RANGE_PROJECTION_KEY_COLUMNS, true, runType,
@@ -258,6 +266,7 @@ public final class EmbeddedBaselineBenchmark {
     private static boolean isRangeScanWorkload(String workload) {
         return "range-scan".equals(workload)
                 || "range-scan-composite-index".equals(workload)
+                || "range-scan-full-covering-index".equals(workload)
                 || "range-scan-key-columns".equals(workload)
                 || "range-scan-name-column".equals(workload)
                 || "range-scan-name-covering-index".equals(workload)
@@ -271,6 +280,9 @@ public final class EmbeddedBaselineBenchmark {
     private static String rangeProjectionFor(String workload) {
         if ("range-scan-unordered".equals(workload)) {
             return RANGE_PROJECTION_UNORDERED;
+        }
+        if ("range-scan-full-covering-index".equals(workload)) {
+            return RANGE_PROJECTION_FULL_COVERING;
         }
         if ("range-scan-key-columns".equals(workload)) {
             return RANGE_PROJECTION_KEY_COLUMNS;
@@ -299,6 +311,9 @@ public final class EmbeddedBaselineBenchmark {
     private static String rangeIndexFor(String workload) {
         if ("range-scan-composite-index".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
+        }
+        if ("range-scan-full-covering-index".equals(workload)) {
+            return RANGE_INDEX_AMOUNT_ID_NAME;
         }
         if ("range-scan-key-columns".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
@@ -814,6 +829,8 @@ public final class EmbeddedBaselineBenchmark {
     private static void indexedRangeScans(Connection connection,
             int rangeOperations, int rangeWidth, String rangeProjection)
             throws SQLException {
+        boolean fullCovering = RANGE_PROJECTION_FULL_COVERING.equals(
+                rangeProjection);
         boolean indexOnly = RANGE_PROJECTION_INDEX_ONLY.equals(
                 rangeProjection);
         boolean countOnly = RANGE_PROJECTION_COUNT.equals(rangeProjection);
@@ -850,6 +867,9 @@ public final class EmbeddedBaselineBenchmark {
                 : unordered
                 ? "select id, name, amount from baseline_item " +
                 "where amount between ? and ?"
+                : fullCovering
+                ? "select id, name, amount from baseline_item " +
+                "where amount between ? and ? order by amount, id"
                 : "select id, name, amount from baseline_item " +
                 "where amount between ? and ? order by amount, id";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
