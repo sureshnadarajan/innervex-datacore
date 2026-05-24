@@ -287,6 +287,17 @@ ant -Ddatacore.benchmark.workload=range-scan-name-column datacore-embedded-bench
 This query uses the `(amount, id)` index and returns only `name`, leaving out
 the integer columns returned by the full-row range scans.
 
+To test whether returning `name` is slow because Derby must visit the base
+table row, run the name-covering-index range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-name-covering-index datacore-embedded-benchmark
+```
+
+This query uses the same SQL as `range-scan-name-column`, but creates an
+`(amount, id, name)` index so the returned `name` value is available from the
+range index.
+
 To isolate the cost of Java string materialization, run the name-no-read range
 scan workload:
 

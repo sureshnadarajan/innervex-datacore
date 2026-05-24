@@ -58,6 +58,8 @@ public final class EmbeddedBaselineBenchmark {
             "full-row-unordered";
     private static final String RANGE_PROJECTION_KEY_COLUMNS = "key-columns";
     private static final String RANGE_PROJECTION_NAME_COLUMN = "name-column";
+    private static final String RANGE_PROJECTION_NAME_COVERING =
+            "name-covering-index";
     private static final String RANGE_PROJECTION_NAME_NO_READ =
             "name-no-read";
     private static final String RANGE_PROJECTION_CONSTANT_ROW =
@@ -66,6 +68,7 @@ public final class EmbeddedBaselineBenchmark {
     private static final String RANGE_PROJECTION_COUNT = "count";
     private static final String RANGE_INDEX_AMOUNT = "amount";
     private static final String RANGE_INDEX_AMOUNT_ID = "amount-id";
+    private static final String RANGE_INDEX_AMOUNT_ID_NAME = "amount-id-name";
     private static final String CSV_HEADER =
             "timestamp,workload,run_type,iteration,rows,read_operations," +
             "insert_ms,lookup_ms,update_ms,delete_ms,scan_ms,total_ms," +
@@ -213,6 +216,12 @@ public final class EmbeddedBaselineBenchmark {
                     iteration);
         }
 
+        if ("range-scan-name-covering-index".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_NAME_COVERING,
+                    RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
+        }
+
         if ("range-scan-name-no-read".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     rangeWidth, RANGE_PROJECTION_NAME_NO_READ, true, runType,
@@ -251,6 +260,7 @@ public final class EmbeddedBaselineBenchmark {
                 || "range-scan-composite-index".equals(workload)
                 || "range-scan-key-columns".equals(workload)
                 || "range-scan-name-column".equals(workload)
+                || "range-scan-name-covering-index".equals(workload)
                 || "range-scan-name-no-read".equals(workload)
                 || "range-scan-constant-row".equals(workload)
                 || "range-scan-unordered".equals(workload)
@@ -267,6 +277,9 @@ public final class EmbeddedBaselineBenchmark {
         }
         if ("range-scan-name-column".equals(workload)) {
             return RANGE_PROJECTION_NAME_COLUMN;
+        }
+        if ("range-scan-name-covering-index".equals(workload)) {
+            return RANGE_PROJECTION_NAME_COVERING;
         }
         if ("range-scan-name-no-read".equals(workload)) {
             return RANGE_PROJECTION_NAME_NO_READ;
@@ -292,6 +305,9 @@ public final class EmbeddedBaselineBenchmark {
         }
         if ("range-scan-name-column".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
+        }
+        if ("range-scan-name-covering-index".equals(workload)) {
+            return RANGE_INDEX_AMOUNT_ID_NAME;
         }
         if ("range-scan-name-no-read".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
@@ -508,13 +524,23 @@ public final class EmbeddedBaselineBenchmark {
             int rows, int rangeOperations, int rangeWidth,
             String rangeProjection, boolean compositeRangeIndex,
             String runType, int iteration) throws Exception {
+        String rangeIndex = compositeRangeIndex ? RANGE_INDEX_AMOUNT_ID
+                : RANGE_INDEX_AMOUNT;
+        return runRangeScan(dbPath, workload, rows, rangeOperations,
+                rangeWidth, rangeProjection, rangeIndex, runType, iteration);
+    }
+
+    private static BenchmarkResult runRangeScan(Path dbPath, String workload,
+            int rows, int rangeOperations, int rangeWidth,
+            String rangeProjection, String rangeIndex, String runType,
+            int iteration) throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection, compositeRangeIndex);
+            createSchema(connection, rangeIndex);
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,
                     iteration, rows, rangeOperations);
@@ -537,20 +563,34 @@ public final class EmbeddedBaselineBenchmark {
 
     private static void createSchema(Connection connection,
             boolean compositeRangeIndex) throws SQLException {
+        String rangeIndex = compositeRangeIndex ? RANGE_INDEX_AMOUNT_ID
+                : RANGE_INDEX_AMOUNT;
+        createSchema(connection, rangeIndex);
+    }
+
+    private static void createSchema(Connection connection, String rangeIndex)
+            throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(
                     "create table baseline_item (" +
                     "id int not null primary key, " +
                     "name varchar(80) not null, " +
                     "amount int not null)");
-            if (compositeRangeIndex) {
+            if (RANGE_INDEX_AMOUNT_ID_NAME.equals(rangeIndex)) {
+                statement.executeUpdate(
+                        "create index baseline_item_amount_id_name_idx " +
+                        "on baseline_item(amount, id, name)");
+            } else if (RANGE_INDEX_AMOUNT_ID.equals(rangeIndex)) {
                 statement.executeUpdate(
                         "create index baseline_item_amount_id_idx " +
                         "on baseline_item(amount, id)");
-            } else {
+            } else if (RANGE_INDEX_AMOUNT.equals(rangeIndex)) {
                 statement.executeUpdate(
                         "create index baseline_item_amount_idx " +
                         "on baseline_item(amount)");
+            } else {
+                throw new IllegalArgumentException("Unknown range index: "
+                        + rangeIndex);
             }
         }
     }
@@ -783,6 +823,8 @@ public final class EmbeddedBaselineBenchmark {
                 rangeProjection);
         boolean nameColumn = RANGE_PROJECTION_NAME_COLUMN.equals(
                 rangeProjection);
+        boolean nameCovering = RANGE_PROJECTION_NAME_COVERING.equals(
+                rangeProjection);
         boolean nameNoRead = RANGE_PROJECTION_NAME_NO_READ.equals(
                 rangeProjection);
         boolean constantRow = RANGE_PROJECTION_CONSTANT_ROW.equals(
@@ -796,7 +838,7 @@ public final class EmbeddedBaselineBenchmark {
                 : keyColumns
                 ? "select id, amount from baseline_item " +
                 "where amount between ? and ? order by amount, id"
-                : nameColumn
+                : nameColumn || nameCovering
                 ? "select name from baseline_item " +
                 "where amount between ? and ? order by amount, id"
                 : nameNoRead
@@ -823,7 +865,7 @@ public final class EmbeddedBaselineBenchmark {
                         } else if (keyColumns) {
                             resultSet.getInt(1);
                             resultSet.getInt(2);
-                        } else if (nameColumn) {
+                        } else if (nameColumn || nameCovering) {
                             resultSet.getString(1);
                         } else if (nameNoRead) {
                             // Move through rows without materializing the name.
