@@ -130,6 +130,12 @@
       description="Run the standard DataCore benchmark suite and refresh the HTML report."
   >
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="insert-heavy"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="insert-heavy-covering-index"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="mixed"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">

@@ -181,6 +181,11 @@ public final class EmbeddedBaselineBenchmark {
             return runInsertHeavy(dbPath, workload, rows, runType, iteration);
         }
 
+        if ("insert-heavy-covering-index".equals(workload)) {
+            return runInsertHeavy(dbPath, workload, rows,
+                    RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
+        }
+
         if ("update-heavy".equals(workload)) {
             return runUpdateHeavy(dbPath, workload, rows, runType, iteration);
         }
@@ -443,13 +448,20 @@ public final class EmbeddedBaselineBenchmark {
     private static BenchmarkResult runInsertHeavy(Path dbPath, String workload,
             int rows, String runType, int iteration)
             throws Exception {
+        return runInsertHeavy(dbPath, workload, rows, RANGE_INDEX_AMOUNT,
+                runType, iteration);
+    }
+
+    private static BenchmarkResult runInsertHeavy(Path dbPath, String workload,
+            int rows, String rangeIndex, String runType, int iteration)
+            throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection);
+            createSchema(connection, rangeIndex);
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,
                     iteration, rows, 0);

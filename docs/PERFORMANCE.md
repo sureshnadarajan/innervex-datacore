@@ -189,6 +189,15 @@ The insert-heavy workload creates the table and measures only the batch insert
 phase. This gives DataCore a simple write-throughput baseline before adding
 deeper storage-engine changes.
 
+To compare the insert cost of maintaining the larger covering range index:
+
+```sh
+ant -Ddatacore.benchmark.workload=insert-heavy-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same insert phase as `insert-heavy`, but creates an
+`(amount, id, name)` index before loading rows.
+
 To run the update-heavy workload:
 
 ```sh
