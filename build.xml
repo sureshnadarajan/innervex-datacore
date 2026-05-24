@@ -145,6 +145,9 @@
       <param name="datacore.benchmark.workload" value="update-heavy"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="update-heavy-covering-index"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="delete-heavy"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">

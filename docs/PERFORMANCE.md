@@ -208,6 +208,15 @@ The update-heavy workload loads the table, then measures updates across all
 rows. This helps track write cost for existing records separately from initial
 data loading.
 
+To compare the update cost of maintaining the larger covering range index:
+
+```sh
+ant -Ddatacore.benchmark.workload=update-heavy-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same update phase as `update-heavy`, but creates an
+`(amount, id, name)` index before loading and updating rows.
+
 To run the delete-heavy workload:
 
 ```sh
