@@ -287,6 +287,16 @@ ant -Ddatacore.benchmark.workload=range-scan-name-column datacore-embedded-bench
 This query uses the `(amount, id)` index and returns only `name`, leaving out
 the integer columns returned by the full-row range scans.
 
+To isolate the cost of Java string materialization, run the name-no-read range
+scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-name-no-read datacore-embedded-benchmark
+```
+
+This query uses the same SQL as `range-scan-name-column`, but advances through
+the result rows without calling `getString()` on the returned `name` column.
+
 To isolate predicate evaluation from result-row materialization, run the
 count-only range scan workload:
 

@@ -58,6 +58,8 @@ public final class EmbeddedBaselineBenchmark {
             "full-row-unordered";
     private static final String RANGE_PROJECTION_KEY_COLUMNS = "key-columns";
     private static final String RANGE_PROJECTION_NAME_COLUMN = "name-column";
+    private static final String RANGE_PROJECTION_NAME_NO_READ =
+            "name-no-read";
     private static final String RANGE_PROJECTION_INDEX_ONLY = "index-only";
     private static final String RANGE_PROJECTION_COUNT = "count";
     private static final String RANGE_INDEX_AMOUNT = "amount";
@@ -209,6 +211,12 @@ public final class EmbeddedBaselineBenchmark {
                     iteration);
         }
 
+        if ("range-scan-name-no-read".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_NAME_NO_READ, true, runType,
+                    iteration);
+        }
+
         if ("range-scan-unordered".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     rangeWidth, RANGE_PROJECTION_UNORDERED, false, runType,
@@ -235,6 +243,7 @@ public final class EmbeddedBaselineBenchmark {
                 || "range-scan-composite-index".equals(workload)
                 || "range-scan-key-columns".equals(workload)
                 || "range-scan-name-column".equals(workload)
+                || "range-scan-name-no-read".equals(workload)
                 || "range-scan-unordered".equals(workload)
                 || "range-scan-index-only".equals(workload)
                 || "range-scan-count".equals(workload);
@@ -249,6 +258,9 @@ public final class EmbeddedBaselineBenchmark {
         }
         if ("range-scan-name-column".equals(workload)) {
             return RANGE_PROJECTION_NAME_COLUMN;
+        }
+        if ("range-scan-name-no-read".equals(workload)) {
+            return RANGE_PROJECTION_NAME_NO_READ;
         }
         if ("range-scan-index-only".equals(workload)) {
             return RANGE_PROJECTION_INDEX_ONLY;
@@ -267,6 +279,9 @@ public final class EmbeddedBaselineBenchmark {
             return RANGE_INDEX_AMOUNT_ID;
         }
         if ("range-scan-name-column".equals(workload)) {
+            return RANGE_INDEX_AMOUNT_ID;
+        }
+        if ("range-scan-name-no-read".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
         }
         return RANGE_INDEX_AMOUNT;
@@ -753,6 +768,8 @@ public final class EmbeddedBaselineBenchmark {
                 rangeProjection);
         boolean nameColumn = RANGE_PROJECTION_NAME_COLUMN.equals(
                 rangeProjection);
+        boolean nameNoRead = RANGE_PROJECTION_NAME_NO_READ.equals(
+                rangeProjection);
         String sql = countOnly
                 ? "select count(*) from baseline_item " +
                 "where amount between ? and ?"
@@ -763,6 +780,9 @@ public final class EmbeddedBaselineBenchmark {
                 ? "select id, amount from baseline_item " +
                 "where amount between ? and ? order by amount, id"
                 : nameColumn
+                ? "select name from baseline_item " +
+                "where amount between ? and ? order by amount, id"
+                : nameNoRead
                 ? "select name from baseline_item " +
                 "where amount between ? and ? order by amount, id"
                 : unordered
@@ -785,6 +805,8 @@ public final class EmbeddedBaselineBenchmark {
                             resultSet.getInt(2);
                         } else if (nameColumn) {
                             resultSet.getString(1);
+                        } else if (nameNoRead) {
+                            // Move through rows without materializing the name.
                         } else {
                             resultSet.getInt(1);
                             resultSet.getString(2);
