@@ -157,6 +157,11 @@ public final class EmbeddedBaselineBenchmark {
                     iteration);
         }
 
+        if ("mixed-covering-index".equals(workload)) {
+            return runMixed(dbPath, workload, rows, readOperations,
+                    RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
+        }
+
         if ("read-heavy".equals(workload)) {
             return runReadHeavy(dbPath, workload, rows, readOperations,
                     runType, iteration);
@@ -172,9 +177,21 @@ public final class EmbeddedBaselineBenchmark {
                     threads, false, runType, iteration);
         }
 
+        if ("concurrent-mixed-covering-index".equals(workload)) {
+            return runConcurrentMixed(dbPath, workload, rows, readOperations,
+                    threads, false, RANGE_INDEX_AMOUNT_ID_NAME, runType,
+                    iteration);
+        }
+
         if ("concurrent-transaction-mixed".equals(workload)) {
             return runConcurrentMixed(dbPath, workload, rows, readOperations,
                     threads, true, runType, iteration);
+        }
+
+        if ("concurrent-transaction-mixed-covering-index".equals(workload)) {
+            return runConcurrentMixed(dbPath, workload, rows, readOperations,
+                    threads, true, RANGE_INDEX_AMOUNT_ID_NAME, runType,
+                    iteration);
         }
 
         if ("insert-heavy".equals(workload)) {
@@ -199,9 +216,19 @@ public final class EmbeddedBaselineBenchmark {
             return runDeleteHeavy(dbPath, workload, rows, runType, iteration);
         }
 
+        if ("delete-heavy-covering-index".equals(workload)) {
+            return runDeleteHeavy(dbPath, workload, rows,
+                    RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
+        }
+
         if ("transaction-heavy".equals(workload)) {
             return runTransactionHeavy(dbPath, workload, rows, runType,
                     iteration);
+        }
+
+        if ("transaction-heavy-covering-index".equals(workload)) {
+            return runTransactionHeavy(dbPath, workload, rows,
+                    RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
         }
 
         if ("range-scan".equals(workload)) {
@@ -346,13 +373,20 @@ public final class EmbeddedBaselineBenchmark {
     private static BenchmarkResult runMixed(Path dbPath, String workload,
             int rows, int readOperations, String runType, int iteration)
             throws Exception {
+        return runMixed(dbPath, workload, rows, readOperations,
+                RANGE_INDEX_AMOUNT, runType, iteration);
+    }
+
+    private static BenchmarkResult runMixed(Path dbPath, String workload,
+            int rows, int readOperations, String rangeIndex, String runType,
+            int iteration) throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection);
+            createSchema(connection, rangeIndex);
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,
                     iteration, rows, 0);
@@ -426,13 +460,22 @@ public final class EmbeddedBaselineBenchmark {
             String workload, int rows, int readOperations, int threads,
             boolean commitPerUpdate, String runType, int iteration)
             throws Exception {
+        return runConcurrentMixed(dbPath, workload, rows, readOperations,
+                threads, commitPerUpdate, RANGE_INDEX_AMOUNT, runType,
+                iteration);
+    }
+
+    private static BenchmarkResult runConcurrentMixed(Path dbPath,
+            String workload, int rows, int readOperations, int threads,
+            boolean commitPerUpdate, String rangeIndex, String runType,
+            int iteration) throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection);
+            createSchema(connection, rangeIndex);
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,
                     iteration, rows, readOperations);
@@ -514,13 +557,20 @@ public final class EmbeddedBaselineBenchmark {
     private static BenchmarkResult runDeleteHeavy(Path dbPath, String workload,
             int rows, String runType, int iteration)
             throws Exception {
+        return runDeleteHeavy(dbPath, workload, rows, RANGE_INDEX_AMOUNT,
+                runType, iteration);
+    }
+
+    private static BenchmarkResult runDeleteHeavy(Path dbPath, String workload,
+            int rows, String rangeIndex, String runType, int iteration)
+            throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection);
+            createSchema(connection, rangeIndex);
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,
                     iteration, rows, 0);
@@ -539,13 +589,20 @@ public final class EmbeddedBaselineBenchmark {
     private static BenchmarkResult runTransactionHeavy(Path dbPath,
             String workload, int rows, String runType, int iteration)
             throws Exception {
+        return runTransactionHeavy(dbPath, workload, rows, RANGE_INDEX_AMOUNT,
+                runType, iteration);
+    }
+
+    private static BenchmarkResult runTransactionHeavy(Path dbPath,
+            String workload, int rows, String rangeIndex, String runType,
+            int iteration) throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection);
+            createSchema(connection, rangeIndex);
             connection.commit();
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,

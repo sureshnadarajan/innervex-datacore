@@ -41,64 +41,74 @@
   <img class="brand" src="assets/ivx-datacore-logo.png" alt="Innervex DataCore logo">
   <p class="owner">Innervex Technologies Private Limited</p>
   <h1>Innervex DataCore Benchmark Report</h1>
-  <p class="meta">Generated 2026-05-24T20:39:07.976399Z from <code>generated/performance/results.csv</code>.</p>
+  <p class="meta">Generated 2026-05-24T20:49:26.739861Z from <code>generated/performance/results.csv</code>.</p>
   <section class="tiles" aria-label="Benchmark summary">
-    <article class="tile"><p class="tile-label">Workloads</p><p class="tile-value">22</p></article>
-    <article class="tile"><p class="tile-label">Fastest</p><p class="tile-value">insert-heavy-covering-index (322.867 ms)</p></article>
-    <article class="tile"><p class="tile-label">Slowest</p><p class="tile-value">range-scan-name-column (5245.720 ms)</p></article>
-    <article class="tile"><p class="tile-label">Commit</p><p class="tile-value">e8f16769441f</p></article>
+    <article class="tile"><p class="tile-label">Workloads</p><p class="tile-value">27</p></article>
+    <article class="tile"><p class="tile-label">Fastest</p><p class="tile-value">insert-heavy (325.332 ms)</p></article>
+    <article class="tile"><p class="tile-label">Slowest</p><p class="tile-value">range-scan (4986.163 ms)</p></article>
+    <article class="tile"><p class="tile-label">Commit</p><p class="tile-value">852691b9d574</p></article>
   </section>
   <h2>Total Time by Workload</h2>
   <div class="chart" aria-label="Total time by workload">
-    <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 9%"></div></div><div class="bar-value">493.668 ms</div></div>
-    <div class="bar-row"><div class="bar-label">transaction-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">537.637 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-read</div><div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div><div class="bar-value">743.355 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div><div class="bar-value">759.074 ms</div></div>
-    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 16%"></div></div><div class="bar-value">824.387 ms</div></div>
-    <div class="bar-row"><div class="bar-label">mixed</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">537.643 ms</div></div>
-    <div class="bar-row"><div class="bar-label">read-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 15%"></div></div><div class="bar-value">777.473 ms</div></div>
-    <div class="bar-row"><div class="bar-label">update-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">506.024 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan</div><div class="bar-track"><div class="bar-fill" style="width: 97%"></div></div><div class="bar-value">5087.554 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-index-only</div><div class="bar-track"><div class="bar-fill" style="width: 39%"></div></div><div class="bar-value">2057.187 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-count</div><div class="bar-track"><div class="bar-fill" style="width: 30%"></div></div><div class="bar-value">1595.879 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-unordered</div><div class="bar-track"><div class="bar-fill" style="width: 82%"></div></div><div class="bar-value">4327.267 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-composite-index</div><div class="bar-track"><div class="bar-fill" style="width: 94%"></div></div><div class="bar-value">4947.459 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-key-columns</div><div class="bar-track"><div class="bar-fill" style="width: 44%"></div></div><div class="bar-value">2316.339 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-name-column</div><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div><div class="bar-value">5245.720 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-name-no-read</div><div class="bar-track"><div class="bar-fill" style="width: 95%"></div></div><div class="bar-value">4990.133 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-constant-row</div><div class="bar-track"><div class="bar-fill" style="width: 45%"></div></div><div class="bar-value">2384.415 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-name-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 48%"></div></div><div class="bar-value">2535.997 ms</div></div>
-    <div class="bar-row"><div class="bar-label">range-scan-full-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 47%"></div></div><div class="bar-value">2456.885 ms</div></div>
-    <div class="bar-row"><div class="bar-label">insert-heavy-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 6%"></div></div><div class="bar-value">322.867 ms</div></div>
-    <div class="bar-row"><div class="bar-label">insert-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 6%"></div></div><div class="bar-value">336.780 ms</div></div>
-    <div class="bar-row"><div class="bar-label">update-heavy-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">516.200 ms</div></div>
+    <div class="bar-row"><div class="bar-label">delete-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">551.776 ms</div></div>
+    <div class="bar-row"><div class="bar-label">transaction-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">538.323 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-read</div><div class="bar-track"><div class="bar-fill" style="width: 13%"></div></div><div class="bar-value">639.795 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 14%"></div></div><div class="bar-value">721.881 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed</div><div class="bar-track"><div class="bar-fill" style="width: 16%"></div></div><div class="bar-value">788.594 ms</div></div>
+    <div class="bar-row"><div class="bar-label">mixed</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">542.869 ms</div></div>
+    <div class="bar-row"><div class="bar-label">read-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 15%"></div></div><div class="bar-value">738.472 ms</div></div>
+    <div class="bar-row"><div class="bar-label">update-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">493.745 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan</div><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div><div class="bar-value">4986.163 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-index-only</div><div class="bar-track"><div class="bar-fill" style="width: 43%"></div></div><div class="bar-value">2147.712 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-count</div><div class="bar-track"><div class="bar-fill" style="width: 31%"></div></div><div class="bar-value">1556.132 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-unordered</div><div class="bar-track"><div class="bar-fill" style="width: 89%"></div></div><div class="bar-value">4449.788 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-composite-index</div><div class="bar-track"><div class="bar-fill" style="width: 99%"></div></div><div class="bar-value">4958.571 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-key-columns</div><div class="bar-track"><div class="bar-fill" style="width: 46%"></div></div><div class="bar-value">2313.041 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-name-column</div><div class="bar-track"><div class="bar-fill" style="width: 98%"></div></div><div class="bar-value">4900.884 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-name-no-read</div><div class="bar-track"><div class="bar-fill" style="width: 97%"></div></div><div class="bar-value">4817.603 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-constant-row</div><div class="bar-track"><div class="bar-fill" style="width: 47%"></div></div><div class="bar-value">2338.435 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-name-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 48%"></div></div><div class="bar-value">2368.765 ms</div></div>
+    <div class="bar-row"><div class="bar-label">range-scan-full-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 46%"></div></div><div class="bar-value">2310.647 ms</div></div>
+    <div class="bar-row"><div class="bar-label">insert-heavy-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 7%"></div></div><div class="bar-value">337.575 ms</div></div>
+    <div class="bar-row"><div class="bar-label">insert-heavy</div><div class="bar-track"><div class="bar-fill" style="width: 7%"></div></div><div class="bar-value">325.332 ms</div></div>
+    <div class="bar-row"><div class="bar-label">update-heavy-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">544.072 ms</div></div>
+    <div class="bar-row"><div class="bar-label">mixed-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 12%"></div></div><div class="bar-value">603.539 ms</div></div>
+    <div class="bar-row"><div class="bar-label">delete-heavy-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 10%"></div></div><div class="bar-value">512.155 ms</div></div>
+    <div class="bar-row"><div class="bar-label">transaction-heavy-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 11%"></div></div><div class="bar-value">538.426 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-mixed-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 16%"></div></div><div class="bar-value">813.550 ms</div></div>
+    <div class="bar-row"><div class="bar-label">concurrent-transaction-mixed-covering-index</div><div class="bar-track"><div class="bar-fill" style="width: 18%"></div></div><div class="bar-value">894.059 ms</div></div>
   </div>
   <h2>Latest Measured Results</h2>
   <table>
     <thead><tr><th>Workload</th><th>Rows</th><th>Reads</th><th>Insert ms</th><th>Lookup ms</th><th>Update ms</th><th>Delete ms</th><th>Scan ms</th><th>Total ms</th><th>Commit</th></tr></thead>
     <tbody>
-      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>127.222</td><td>0.000</td><td>0.000</td><td>213.794</td><td>0.000</td><td>493.668</td><td>e8f16769441f</td></tr>
-      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>365.747</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>537.637</td><td>e8f16769441f</td></tr>
-      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>175.551</td><td>350.172</td><td>0.000</td><td>0.000</td><td>0.000</td><td>743.355</td><td>e8f16769441f</td></tr>
-      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>101.372</td><td>487.246</td><td>252.750</td><td>0.000</td><td>0.000</td><td>759.074</td><td>e8f16769441f</td></tr>
-      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>100.402</td><td>361.319</td><td>553.584</td><td>0.000</td><td>0.000</td><td>824.387</td><td>e8f16769441f</td></tr>
-      <tr><td>mixed</td><td>5000</td><td>0</td><td>109.421</td><td>60.089</td><td>179.346</td><td>0.000</td><td>22.940</td><td>537.643</td><td>e8f16769441f</td></tr>
-      <tr><td>read-heavy</td><td>5000</td><td>50000</td><td>172.796</td><td>374.286</td><td>0.000</td><td>0.000</td><td>0.000</td><td>777.473</td><td>e8f16769441f</td></tr>
-      <tr><td>update-heavy</td><td>5000</td><td>0</td><td>111.273</td><td>0.000</td><td>212.769</td><td>0.000</td><td>0.000</td><td>506.024</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan</td><td>5000</td><td>5000</td><td>103.272</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4842.472</td><td>5087.554</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-index-only</td><td>5000</td><td>5000</td><td>122.493</td><td>0.000</td><td>0.000</td><td>0.000</td><td>1774.202</td><td>2057.187</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-count</td><td>5000</td><td>5000</td><td>130.539</td><td>0.000</td><td>0.000</td><td>0.000</td><td>1265.982</td><td>1595.879</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-unordered</td><td>5000</td><td>5000</td><td>108.935</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4062.469</td><td>4327.267</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-composite-index</td><td>5000</td><td>5000</td><td>122.740</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4668.971</td><td>4947.459</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-key-columns</td><td>5000</td><td>5000</td><td>120.037</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2010.324</td><td>2316.339</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-name-column</td><td>5000</td><td>5000</td><td>116.433</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4954.985</td><td>5245.720</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-name-no-read</td><td>5000</td><td>5000</td><td>109.895</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4743.379</td><td>4990.133</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-constant-row</td><td>5000</td><td>5000</td><td>113.163</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2115.039</td><td>2384.415</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-name-covering-index</td><td>5000</td><td>5000</td><td>118.936</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2256.946</td><td>2535.997</td><td>e8f16769441f</td></tr>
-      <tr><td>range-scan-full-covering-index</td><td>5000</td><td>5000</td><td>127.105</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2155.227</td><td>2456.885</td><td>e8f16769441f</td></tr>
-      <tr><td>insert-heavy-covering-index</td><td>5000</td><td>0</td><td>161.894</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>322.867</td><td>e8f16769441f</td></tr>
-      <tr><td>insert-heavy</td><td>5000</td><td>0</td><td>159.878</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>336.780</td><td>e8f16769441f</td></tr>
-      <tr><td>update-heavy-covering-index</td><td>5000</td><td>0</td><td>112.860</td><td>0.000</td><td>222.648</td><td>0.000</td><td>0.000</td><td>516.200</td><td>e8f16769441f</td></tr>
+      <tr><td>delete-heavy</td><td>5000</td><td>0</td><td>114.084</td><td>0.000</td><td>0.000</td><td>191.459</td><td>0.000</td><td>551.776</td><td>852691b9d574</td></tr>
+      <tr><td>transaction-heavy</td><td>5000</td><td>0</td><td>354.565</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>538.323</td><td>852691b9d574</td></tr>
+      <tr><td>concurrent-read</td><td>5000</td><td>50000</td><td>137.516</td><td>298.899</td><td>0.000</td><td>0.000</td><td>0.000</td><td>639.795</td><td>852691b9d574</td></tr>
+      <tr><td>concurrent-mixed</td><td>5000</td><td>50000</td><td>102.621</td><td>465.343</td><td>196.866</td><td>0.000</td><td>0.000</td><td>721.881</td><td>852691b9d574</td></tr>
+      <tr><td>concurrent-transaction-mixed</td><td>5000</td><td>50000</td><td>103.815</td><td>313.829</td><td>499.612</td><td>0.000</td><td>0.000</td><td>788.594</td><td>852691b9d574</td></tr>
+      <tr><td>mixed</td><td>5000</td><td>0</td><td>117.516</td><td>61.362</td><td>181.239</td><td>0.000</td><td>21.895</td><td>542.869</td><td>852691b9d574</td></tr>
+      <tr><td>read-heavy</td><td>5000</td><td>50000</td><td>164.207</td><td>340.663</td><td>0.000</td><td>0.000</td><td>0.000</td><td>738.472</td><td>852691b9d574</td></tr>
+      <tr><td>update-heavy</td><td>5000</td><td>0</td><td>106.158</td><td>0.000</td><td>190.094</td><td>0.000</td><td>0.000</td><td>493.745</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan</td><td>5000</td><td>5000</td><td>110.369</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4722.242</td><td>4986.163</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-index-only</td><td>5000</td><td>5000</td><td>117.307</td><td>0.000</td><td>0.000</td><td>0.000</td><td>1863.745</td><td>2147.712</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-count</td><td>5000</td><td>5000</td><td>136.745</td><td>0.000</td><td>0.000</td><td>0.000</td><td>1243.488</td><td>1556.132</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-unordered</td><td>5000</td><td>5000</td><td>112.556</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4188.320</td><td>4449.788</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-composite-index</td><td>5000</td><td>5000</td><td>117.089</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4665.402</td><td>4958.571</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-key-columns</td><td>5000</td><td>5000</td><td>121.627</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2031.574</td><td>2313.041</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-name-column</td><td>5000</td><td>5000</td><td>127.620</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4625.036</td><td>4900.884</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-name-no-read</td><td>5000</td><td>5000</td><td>113.247</td><td>0.000</td><td>0.000</td><td>0.000</td><td>4544.943</td><td>4817.603</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-constant-row</td><td>5000</td><td>5000</td><td>115.565</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2048.379</td><td>2338.435</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-name-covering-index</td><td>5000</td><td>5000</td><td>118.533</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2087.685</td><td>2368.765</td><td>852691b9d574</td></tr>
+      <tr><td>range-scan-full-covering-index</td><td>5000</td><td>5000</td><td>116.908</td><td>0.000</td><td>0.000</td><td>0.000</td><td>2040.887</td><td>2310.647</td><td>852691b9d574</td></tr>
+      <tr><td>insert-heavy-covering-index</td><td>5000</td><td>0</td><td>163.621</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>337.575</td><td>852691b9d574</td></tr>
+      <tr><td>insert-heavy</td><td>5000</td><td>0</td><td>161.401</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>325.332</td><td>852691b9d574</td></tr>
+      <tr><td>update-heavy-covering-index</td><td>5000</td><td>0</td><td>120.803</td><td>0.000</td><td>217.671</td><td>0.000</td><td>0.000</td><td>544.072</td><td>852691b9d574</td></tr>
+      <tr><td>mixed-covering-index</td><td>5000</td><td>0</td><td>111.055</td><td>61.963</td><td>225.024</td><td>0.000</td><td>42.410</td><td>603.539</td><td>852691b9d574</td></tr>
+      <tr><td>delete-heavy-covering-index</td><td>5000</td><td>0</td><td>137.280</td><td>0.000</td><td>0.000</td><td>174.019</td><td>0.000</td><td>512.155</td><td>852691b9d574</td></tr>
+      <tr><td>transaction-heavy-covering-index</td><td>5000</td><td>0</td><td>369.943</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td><td>538.426</td><td>852691b9d574</td></tr>
+      <tr><td>concurrent-mixed-covering-index</td><td>5000</td><td>50000</td><td>117.525</td><td>515.004</td><td>250.920</td><td>0.000</td><td>0.000</td><td>813.550</td><td>852691b9d574</td></tr>
+      <tr><td>concurrent-transaction-mixed-covering-index</td><td>5000</td><td>50000</td><td>147.206</td><td>382.677</td><td>585.001</td><td>0.000</td><td>0.000</td><td>894.059</td><td>852691b9d574</td></tr>
     </tbody>
   </table>
   <section class="note" aria-label="Refresh report">

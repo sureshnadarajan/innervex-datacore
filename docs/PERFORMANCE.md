@@ -126,9 +126,9 @@ To run the standard local suite and refresh the report in one command:
 ant datacore-benchmark-suite
 ```
 
-The suite runs mixed, read-heavy, update-heavy, delete-heavy,
-transaction-heavy, range-scan, concurrent-read, concurrent-mixed, and
-concurrent-transaction-mixed workloads.
+The suite runs the core mixed/read/write/range/concurrent workloads plus
+covering-index twins for the write-heavy paths where the larger range index
+can change maintenance cost.
 
 On macOS, the repository also provides helper commands that use the NetBeans
 Ant runtime when it is available:
@@ -169,6 +169,17 @@ The concurrent-mixed workload loads the table, then runs one writer thread
 updating rows while the remaining threads perform primary-key reads. This gives
 DataCore a first locking and read/write concurrency baseline.
 
+To compare concurrent mixed read/write cost with the larger covering range
+index:
+
+```sh
+ant -Ddatacore.benchmark.workload=concurrent-mixed-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same concurrent read/write pattern as
+`concurrent-mixed`, but creates an `(amount, id, name)` index before loading
+and updating rows.
+
 To run the concurrent mixed transaction workload:
 
 ```sh
@@ -178,6 +189,15 @@ ant -Ddatacore.benchmark.workload=concurrent-transaction-mixed datacore-embedded
 The concurrent-transaction-mixed workload runs reader threads while one writer
 updates rows using one commit per row. This combines locking pressure with
 small-transaction commit overhead.
+
+To compare concurrent transaction cost with the larger covering range index:
+
+```sh
+ant -Ddatacore.benchmark.workload=concurrent-transaction-mixed-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same reader/writer pattern as
+`concurrent-transaction-mixed`, but maintains the `(amount, id, name)` index.
 
 To run the insert-heavy workload:
 
@@ -197,6 +217,15 @@ ant -Ddatacore.benchmark.workload=insert-heavy-covering-index datacore-embedded-
 
 This workload measures the same insert phase as `insert-heavy`, but creates an
 `(amount, id, name)` index before loading rows.
+
+To compare the full mixed workload with the larger covering range index:
+
+```sh
+ant -Ddatacore.benchmark.workload=mixed-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same insert, lookup, update, and grouped scan phases
+as `mixed`, but maintains the `(amount, id, name)` index.
 
 To run the update-heavy workload:
 
@@ -226,6 +255,15 @@ ant -Ddatacore.benchmark.workload=delete-heavy datacore-embedded-benchmark
 The delete-heavy workload loads the table, then measures deletes across all
 rows. This gives DataCore a separate baseline for row removal and index cleanup.
 
+To compare the delete cost of maintaining the larger covering range index:
+
+```sh
+ant -Ddatacore.benchmark.workload=delete-heavy-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same delete phase as `delete-heavy`, but creates an
+`(amount, id, name)` index before loading and deleting rows.
+
 To run the transaction-heavy workload:
 
 ```sh
@@ -235,6 +273,15 @@ ant -Ddatacore.benchmark.workload=transaction-heavy datacore-embedded-benchmark
 The transaction-heavy workload inserts rows using one commit per row. This
 measures transaction commit overhead, which is important for enterprise
 applications that perform many small units of work.
+
+To compare per-row commit insert cost with the larger covering range index:
+
+```sh
+ant -Ddatacore.benchmark.workload=transaction-heavy-covering-index datacore-embedded-benchmark
+```
+
+This workload measures the same one-commit-per-row insert pattern as
+`transaction-heavy`, but maintains the `(amount, id, name)` index.
 
 To run the indexed range-scan workload:
 

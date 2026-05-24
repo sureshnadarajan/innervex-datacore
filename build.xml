@@ -139,6 +139,9 @@
       <param name="datacore.benchmark.workload" value="mixed"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="mixed-covering-index"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="read-heavy"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
@@ -151,7 +154,13 @@
       <param name="datacore.benchmark.workload" value="delete-heavy"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="delete-heavy-covering-index"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="transaction-heavy"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="transaction-heavy-covering-index"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="range-scan"/>
@@ -195,7 +204,15 @@
       <param name="datacore.benchmark.threads" value="8"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="concurrent-mixed-covering-index"/>
+      <param name="datacore.benchmark.threads" value="8"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="concurrent-transaction-mixed"/>
+      <param name="datacore.benchmark.threads" value="8"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="concurrent-transaction-mixed-covering-index"/>
       <param name="datacore.benchmark.threads" value="8"/>
     </antcall>
     <antcall target="datacore-benchmark-summary"/>
