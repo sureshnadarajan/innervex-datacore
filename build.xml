@@ -172,6 +172,9 @@
       <param name="datacore.benchmark.workload" value="range-scan-full-covering-index"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">
+      <param name="datacore.benchmark.workload" value="range-scan-dual-index"/>
+    </antcall>
+    <antcall target="datacore-embedded-benchmark-run">
       <param name="datacore.benchmark.workload" value="range-scan-key-columns"/>
     </antcall>
     <antcall target="datacore-embedded-benchmark-run">

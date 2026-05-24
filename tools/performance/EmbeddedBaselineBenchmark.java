@@ -71,6 +71,8 @@ public final class EmbeddedBaselineBenchmark {
     private static final String RANGE_INDEX_AMOUNT = "amount";
     private static final String RANGE_INDEX_AMOUNT_ID = "amount-id";
     private static final String RANGE_INDEX_AMOUNT_ID_NAME = "amount-id-name";
+    private static final String RANGE_INDEX_AMOUNT_ID_AND_COVERING =
+            "amount-id-and-covering";
     private static final String CSV_HEADER =
             "timestamp,workload,run_type,iteration,rows,read_operations," +
             "insert_ms,lookup_ms,update_ms,delete_ms,scan_ms,total_ms," +
@@ -249,6 +251,12 @@ public final class EmbeddedBaselineBenchmark {
                     RANGE_INDEX_AMOUNT_ID_NAME, runType, iteration);
         }
 
+        if ("range-scan-dual-index".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_FULL_COVERING,
+                    RANGE_INDEX_AMOUNT_ID_AND_COVERING, runType, iteration);
+        }
+
         if ("range-scan-key-columns".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
                     rangeWidth, RANGE_PROJECTION_KEY_COLUMNS, true, runType,
@@ -304,6 +312,7 @@ public final class EmbeddedBaselineBenchmark {
         return "range-scan".equals(workload)
                 || "range-scan-composite-index".equals(workload)
                 || "range-scan-full-covering-index".equals(workload)
+                || "range-scan-dual-index".equals(workload)
                 || "range-scan-key-columns".equals(workload)
                 || "range-scan-name-column".equals(workload)
                 || "range-scan-name-covering-index".equals(workload)
@@ -319,6 +328,9 @@ public final class EmbeddedBaselineBenchmark {
             return RANGE_PROJECTION_UNORDERED;
         }
         if ("range-scan-full-covering-index".equals(workload)) {
+            return RANGE_PROJECTION_FULL_COVERING;
+        }
+        if ("range-scan-dual-index".equals(workload)) {
             return RANGE_PROJECTION_FULL_COVERING;
         }
         if ("range-scan-key-columns".equals(workload)) {
@@ -351,6 +363,9 @@ public final class EmbeddedBaselineBenchmark {
         }
         if ("range-scan-full-covering-index".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID_NAME;
+        }
+        if ("range-scan-dual-index".equals(workload)) {
+            return RANGE_INDEX_AMOUNT_ID_AND_COVERING;
         }
         if ("range-scan-key-columns".equals(workload)) {
             return RANGE_INDEX_AMOUNT_ID;
@@ -673,6 +688,13 @@ public final class EmbeddedBaselineBenchmark {
                     "name varchar(80) not null, " +
                     "amount int not null)");
             if (RANGE_INDEX_AMOUNT_ID_NAME.equals(rangeIndex)) {
+                statement.executeUpdate(
+                        "create index baseline_item_amount_id_name_idx " +
+                        "on baseline_item(amount, id, name)");
+            } else if (RANGE_INDEX_AMOUNT_ID_AND_COVERING.equals(rangeIndex)) {
+                statement.executeUpdate(
+                        "create index baseline_item_amount_id_idx " +
+                        "on baseline_item(amount, id)");
                 statement.executeUpdate(
                         "create index baseline_item_amount_id_name_idx " +
                         "on baseline_item(amount, id, name)");

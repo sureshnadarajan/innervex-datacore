@@ -343,6 +343,16 @@ This query uses the same SQL as `range-scan-composite-index`, but creates an
 `(amount, id, name)` index that covers every returned column in
 `baseline_item`.
 
+To verify that the optimizer chooses the covering index when both ordered
+range indexes are available, run the dual-index range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-dual-index datacore-embedded-benchmark
+```
+
+This query creates both `(amount, id)` and `(amount, id, name)` indexes, then
+runs the same full-row ordered range scan.
+
 To isolate the cost of returning the string payload, run the key-column range
 scan workload:
 
