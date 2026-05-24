@@ -58,6 +58,8 @@ public final class EmbeddedBaselineBenchmark {
             "full-row-unordered";
     private static final String RANGE_PROJECTION_INDEX_ONLY = "index-only";
     private static final String RANGE_PROJECTION_COUNT = "count";
+    private static final String RANGE_INDEX_AMOUNT = "amount";
+    private static final String RANGE_INDEX_AMOUNT_ID = "amount-id";
     private static final String CSV_HEADER =
             "timestamp,workload,run_type,iteration,rows,read_operations," +
             "insert_ms,lookup_ms,update_ms,delete_ms,scan_ms,total_ms," +
@@ -102,6 +104,7 @@ public final class EmbeddedBaselineBenchmark {
             System.out.println("range_width=" + rangeWidth);
             System.out.println("range_projection="
                     + rangeProjectionFor(workload));
+            System.out.println("range_index=" + rangeIndexFor(workload));
         }
         System.out.println("warmup=" + warmup);
         System.out.println("iterations=" + iterations);
@@ -182,24 +185,32 @@ public final class EmbeddedBaselineBenchmark {
 
         if ("range-scan".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, RANGE_PROJECTION_FULL, runType, iteration);
+                    rangeWidth, RANGE_PROJECTION_FULL, false, runType,
+                    iteration);
+        }
+
+        if ("range-scan-composite-index".equals(workload)) {
+            return runRangeScan(dbPath, workload, rows, rangeOperations,
+                    rangeWidth, RANGE_PROJECTION_FULL, true, runType,
+                    iteration);
         }
 
         if ("range-scan-unordered".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, RANGE_PROJECTION_UNORDERED, runType,
+                    rangeWidth, RANGE_PROJECTION_UNORDERED, false, runType,
                     iteration);
         }
 
         if ("range-scan-index-only".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, RANGE_PROJECTION_INDEX_ONLY, runType,
+                    rangeWidth, RANGE_PROJECTION_INDEX_ONLY, false, runType,
                     iteration);
         }
 
         if ("range-scan-count".equals(workload)) {
             return runRangeScan(dbPath, workload, rows, rangeOperations,
-                    rangeWidth, RANGE_PROJECTION_COUNT, runType, iteration);
+                    rangeWidth, RANGE_PROJECTION_COUNT, false, runType,
+                    iteration);
         }
 
         throw new IllegalArgumentException("Unknown workload: " + workload);
@@ -207,6 +218,7 @@ public final class EmbeddedBaselineBenchmark {
 
     private static boolean isRangeScanWorkload(String workload) {
         return "range-scan".equals(workload)
+                || "range-scan-composite-index".equals(workload)
                 || "range-scan-unordered".equals(workload)
                 || "range-scan-index-only".equals(workload)
                 || "range-scan-count".equals(workload);
@@ -223,6 +235,13 @@ public final class EmbeddedBaselineBenchmark {
             return RANGE_PROJECTION_COUNT;
         }
         return RANGE_PROJECTION_FULL;
+    }
+
+    private static String rangeIndexFor(String workload) {
+        if ("range-scan-composite-index".equals(workload)) {
+            return RANGE_INDEX_AMOUNT_ID;
+        }
+        return RANGE_INDEX_AMOUNT;
     }
 
     private static BenchmarkResult runMixed(Path dbPath, String workload,
@@ -429,15 +448,15 @@ public final class EmbeddedBaselineBenchmark {
 
     private static BenchmarkResult runRangeScan(Path dbPath, String workload,
             int rows, int rangeOperations, int rangeWidth,
-            String rangeProjection, String runType, int iteration)
-            throws Exception {
+            String rangeProjection, boolean compositeRangeIndex,
+            String runType, int iteration) throws Exception {
         deleteIfExists(dbPath);
 
         String url = "jdbc:derby:" + dbPath.toAbsolutePath() + ";create=true";
         long startNanos = System.nanoTime();
         try (Connection connection = DriverManager.getConnection(url)) {
             connection.setAutoCommit(false);
-            createSchema(connection);
+            createSchema(connection, compositeRangeIndex);
 
             BenchmarkResult result = new BenchmarkResult(workload, runType,
                     iteration, rows, rangeOperations);
@@ -455,15 +474,26 @@ public final class EmbeddedBaselineBenchmark {
     }
 
     private static void createSchema(Connection connection) throws SQLException {
+        createSchema(connection, false);
+    }
+
+    private static void createSchema(Connection connection,
+            boolean compositeRangeIndex) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(
                     "create table baseline_item (" +
                     "id int not null primary key, " +
                     "name varchar(80) not null, " +
                     "amount int not null)");
-            statement.executeUpdate(
-                    "create index baseline_item_amount_idx " +
-                    "on baseline_item(amount)");
+            if (compositeRangeIndex) {
+                statement.executeUpdate(
+                        "create index baseline_item_amount_id_idx " +
+                        "on baseline_item(amount, id)");
+            } else {
+                statement.executeUpdate(
+                        "create index baseline_item_amount_idx " +
+                        "on baseline_item(amount)");
+            }
         }
     }
 

@@ -257,6 +257,16 @@ ant -Ddatacore.benchmark.workload=range-scan-unordered datacore-embedded-benchma
 This query fetches the same columns as `range-scan` but does not request
 `order by amount, id`.
 
+To test whether an index that matches the ordered range query helps, run the
+composite-index range scan workload:
+
+```sh
+ant -Ddatacore.benchmark.workload=range-scan-composite-index datacore-embedded-benchmark
+```
+
+This query uses the same SQL as `range-scan`, but creates the benchmark table
+with an `(amount, id)` index instead of the single-column `amount` index.
+
 To isolate predicate evaluation from result-row materialization, run the
 count-only range scan workload:
 
