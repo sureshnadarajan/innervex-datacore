@@ -1,41 +1,47 @@
 ![Innervex DataCore logo](docs/assets/ivx-datacore-logo.png)
 
-# Innervex DataCore
+# Innervex® DataCore
 
-Enterprise-grade embedded relational database technology for Java platforms,
-based on Apache Derby.
+Enterprise Data Platform & Integration Framework.
 
-Innervex DataCore is an independent open-source continuation and modernization
-workspace derived from Apache Derby 10.17.1.0. The project keeps Derby's proven
-embedded relational database foundation while creating room for focused
-enterprise maintenance, usability improvements, and Java platform evolution.
+Built on Open Standards. Engineered for Enterprise Operations.
 
-This project is developed and maintained by Innervex Technologies Private
-Limited as part of the Innervex enterprise data platform work.
+Innervex DataCore is an enterprise data platform, deployment framework,
+integration architecture, and support ecosystem developed by Innervex
+Technologies Private Limited.
+
+Innervex DataCore may incorporate and utilise open-source technologies and
+database engines as part of its implementation architecture. All underlying
+open-source software components remain the property of their respective
+copyright holders and are governed by their respective licences.
+
+Innervex Technologies does not claim ownership of any third-party open-source
+projects included within the Innervex DataCore ecosystem.
 
 ## Project Mission
 
-The purpose of Innervex DataCore is to provide an Innervex-owned and
-Innervex-maintained embedded relational database foundation for Java platforms.
-The project starts from Apache Derby's mature codebase and aims to bring
-performance, developer experience, diagnostics, and long-term maintainability
-up to the standard expected from enterprise-grade embedded database software.
+The purpose of Innervex DataCore is to provide an enterprise data platform and
+integration framework around trusted open technologies. The project starts from
+Apache Derby's mature codebase and aims to improve performance, developer
+experience, diagnostics, and long-term maintainability while preserving
+Derby-compatible behavior.
 
 Performance work will be benchmark-led and compatibility-safe. The goal is to
 improve measurable behavior without casually breaking Derby-compatible SQL,
 JDBC, transaction, storage, or recovery semantics.
 
 See [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md) for the project performance
-plan.
+plan and [`docs/INDEXING.md`](docs/INDEXING.md) for covering-index guidance.
 
 ## Public Project Notice
 
-Innervex DataCore is an independent project based on Apache Derby. It is not an
-official Apache Derby release and is not affiliated with, endorsed by, or
-maintained by the Apache Software Foundation.
+Innervex DataCore includes work based on Apache Derby. It is not an official
+Apache Derby release and is not affiliated with, endorsed by, or maintained by
+the Apache Software Foundation.
 
 Innervex and Innervex DataCore branding belong to Innervex Technologies Private
-Limited.
+Limited. Third-party open-source projects retain their own ownership, notices,
+and licence terms.
 
 Apache Derby source attribution, copyright notices, license terms, and NOTICE
 content are preserved. New Innervex DataCore changes are developed in this
@@ -52,6 +58,8 @@ For a contributor-oriented map of the codebase, see
 
 For the performance direction, see
 [`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
+
+For indexing guidance, see [`docs/INDEXING.md`](docs/INDEXING.md).
 
 ## Build
 
