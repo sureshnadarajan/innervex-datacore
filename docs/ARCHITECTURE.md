@@ -1,4 +1,37 @@
-# Innervex DataCore Architecture
+**INNERVEX TECHNOLOGIES PRIVATE LIMITED**
+
+# INNERVEX® DATACORE
+
+### Enterprise Data Platform & Integration Framework
+
+**Version:** 1.0  
+
+**Built on Open Standards. Engineered for Enterprise Operations.**
+
+---
+
+| INNERVEX TECHNOLOGIES PRIVATE LIMITED | INNERVEX® DATACORE<br>Enterprise Data Platform & Integration Framework | Version: 1.0<br>Document Type: Product Architecture & Technical Overview |
+| --- | --- | --- |
+
+## 1. Technology Notice
+
+Innervex DataCore is an enterprise data platform, deployment framework,
+integration architecture, and support ecosystem developed by Innervex
+Technologies.
+
+Innervex DataCore may incorporate and utilise open-source technologies and
+database engines as part of its implementation architecture. All underlying
+open-source software components remain the property of their respective
+copyright holders and are governed by their respective licences.
+
+Innervex Technologies does not claim ownership of any third-party open-source
+projects included within the Innervex DataCore ecosystem.
+
+# 2. Architecture Overview
+
+**INNERVEX® DATACORE**  
+Enterprise Data Platform & Integration Framework  
+Built on Open Standards. Engineered for Enterprise Operations.
 
 Innervex DataCore begins from Apache Derby 10.17.1.0. The current codebase is
 best understood as a modular Java relational database with an embedded engine,
@@ -9,10 +42,10 @@ This document is a practical map for contributors. It describes where the major
 parts live and how to approach modernization without breaking Derby-compatible
 behavior.
 
-The long-term purpose is to make DataCore an Innervex-owned and
-Innervex-maintained database foundation. Performance improvements should be
-driven by repeatable measurements, targeted engine work, and careful protection
-of database correctness.
+The long-term purpose is to make DataCore an Innervex-supported enterprise data
+platform and integration framework. Performance improvements should be driven
+by repeatable measurements, targeted technical work, and careful protection of
+database correctness.
 
 ## High-Level Shape
 
@@ -114,12 +147,22 @@ Future research areas:
 - Cleaner module boundaries
 - Clearer public versus internal APIs
 - Better diagnostics around locks, transactions, and query plans
+- Clearer indexing guidance for common query shapes
 - Modern packaging and publishing workflow
 - MVCC research as a long-term investigation, not an immediate replacement for
   Derby locking semantics
+
+## Related Notes
+
+- [Indexing notes](INDEXING.md) - practical covering-index guidance proven by
+  the local benchmark suite and Derby regression tests.
 
 ## Contributor Rule of Thumb
 
 Small, well-tested improvements are preferred over broad rewrites. The database
 engine is mature code; correctness, compatibility, and recoverability matter
 more than cosmetic modernization.
+
+---
+
+**Innervex® DataCore Documentation**

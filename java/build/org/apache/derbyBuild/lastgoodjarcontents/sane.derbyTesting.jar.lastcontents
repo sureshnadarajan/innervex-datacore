@@ -304,6 +304,7 @@ org.apache.derbyTesting.functionTests.tests.lang.ConglomerateSharingTest.class
 org.apache.derbyTesting.functionTests.tests.lang.ConnectTest.class
 org.apache.derbyTesting.functionTests.tests.lang.ConsistencyCheckerTest.class
 org.apache.derbyTesting.functionTests.tests.lang.ConstantExpressionTest.class
+org.apache.derbyTesting.functionTests.tests.lang.CoveringIndexOptimizerTest.class
 org.apache.derbyTesting.functionTests.tests.lang.ConstraintCharacteristicsTest.class
 org.apache.derbyTesting.functionTests.tests.lang.CreateTableFromQueryTest.class
 org.apache.derbyTesting.functionTests.tests.lang.CurrentOfTest.class

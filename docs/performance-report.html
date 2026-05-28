@@ -5,8 +5,17 @@
   <title>Innervex DataCore Benchmark Report</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #172033; background: #f7f9fc; }
-    main { max-width: 1160px; margin: 0 auto; padding: 40px 24px; }
+    body::before { content: "INNERVEX DATACORE"; position: fixed; inset: 35% auto auto 12%; transform: rotate(-28deg); font-size: 64px; font-weight: 900; letter-spacing: 0.12em; color: rgba(23, 32, 51, 0.06); pointer-events: none; z-index: 0; }
+    main { max-width: 1160px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 1; }
     .brand { width: min(520px, 100%); height: auto; display: block; margin: 0 0 24px; }
+    .doc-header, .doc-footer { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid #d9e1ec; border-bottom: 1px solid #d9e1ec; margin-bottom: 26px; }
+    .doc-header div, .doc-footer div { font-size: 12px; font-weight: 800; color: #25314a; }
+    .doc-header div:nth-child(2), .doc-footer div:nth-child(2) { text-align: center; }
+    .doc-header div:nth-child(3), .doc-footer div:nth-child(3) { text-align: right; }
+    .cover { margin: 0 0 26px; }
+    .cover-title { margin: 0 0 8px; font-size: 38px; font-weight: 900; color: #172033; }
+    .cover-subtitle { margin: 0 0 8px; color: #25314a; font-size: 18px; font-weight: 800; }
+    .cover-tagline { margin: 0 0 18px; color: #008ee8; font-weight: 800; }
     h1 { margin: 0 0 8px; font-size: 34px; }
     p { margin: 0 0 22px; color: #536176; }
     .owner { margin: 0 0 10px; color: #008ee8; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -31,6 +40,8 @@
     .bar-value { color: #536176; font-variant-numeric: tabular-nums; text-align: right; }
     .note { margin: 26px 0 0; padding: 18px; background: white; border: 1px solid #d9e1ec; }
     .note p { margin-bottom: 12px; }
+    footer { margin: 28px 0 0; color: #536176; }
+    footer p { margin: 12px 0 0; font-size: 13px; text-align: center; }
     .command { display: block; overflow-x: auto; padding: 12px 14px; background: #071b35; color: #dff6ff; border-radius: 6px; white-space: nowrap; }
     @media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 760px) { .tiles, .bar-row { grid-template-columns: 1fr; gap: 6px; } .bar-value { text-align: left; } }
@@ -38,7 +49,24 @@
 </head>
 <body>
 <main>
+  <section class="doc-header" aria-label="Document header">
+    <div>INNERVEX TECHNOLOGIES PRIVATE LIMITED</div>
+    <div>INNERVEX&reg; DATACORE<br>Enterprise Data Platform & Integration Framework</div>
+    <div>Version: 1.0<br>Document Type: Benchmark Report</div>
+  </section>
   <img class="brand" src="assets/ivx-datacore-logo.png" alt="Innervex DataCore logo">
+  <section class="cover" aria-label="Cover page">
+    <p class="cover-title">INNERVEX&reg; DATACORE</p>
+    <p class="cover-subtitle">Enterprise Data Platform & Integration Framework</p>
+    <p class="cover-tagline">Built on Open Standards. Engineered for Enterprise Operations.</p>
+    <p><strong>Version:</strong> 1.0</p>
+  </section>
+  <section class="note" aria-label="Technology notice">
+    <h2>Technology Notice</h2>
+    <p>Innervex DataCore is an enterprise data platform, deployment framework, integration architecture, and support ecosystem developed by Innervex Technologies.</p>
+    <p>Innervex DataCore may incorporate and utilise open-source technologies and database engines as part of its implementation architecture. All underlying open-source software components remain the property of their respective copyright holders and are governed by their respective licences.</p>
+    <p>Innervex Technologies does not claim ownership of any third-party open-source projects included within the Innervex DataCore ecosystem.</p>
+  </section>
   <p class="owner">Innervex Technologies Private Limited</p>
   <h1>Innervex DataCore Benchmark Report</h1>
   <p class="meta">Generated 2026-05-24T21:02:48.695748Z from <code>generated/performance/results.csv</code>.</p>
@@ -119,6 +147,13 @@
     <code class="command">bin/datacore-benchmark-suite</code>
     <code class="command">bin/datacore-benchmark-report</code>
   </section>
+  <footer>
+    <section class="doc-footer" aria-label="Document footer">
+      <div>Innervex&reg; DataCore Documentation</div>
+      <div>Page 1 of 1</div>
+    </section>
+    <p>Innervex&reg; DataCore Documentation | Page 1 of 1</p>
+  </footer>
 </main>
 </body>
 </html>

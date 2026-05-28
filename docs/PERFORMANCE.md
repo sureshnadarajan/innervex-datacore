@@ -1,12 +1,45 @@
-# Innervex DataCore Performance Plan
+**INNERVEX TECHNOLOGIES PRIVATE LIMITED**
 
-Innervex DataCore exists to give Innervex an owned, maintained, and measurable
-embedded relational database foundation. Performance work in this repository
+# INNERVEX® DATACORE
+
+### Enterprise Data Platform & Integration Framework
+
+**Version:** 1.0  
+
+**Built on Open Standards. Engineered for Enterprise Operations.**
+
+---
+
+| INNERVEX TECHNOLOGIES PRIVATE LIMITED | INNERVEX® DATACORE<br>Enterprise Data Platform & Integration Framework | Version: 1.0<br>Document Type: Performance Plan & Benchmark Overview |
+| --- | --- | --- |
+
+## 1. Technology Notice
+
+Innervex DataCore is an enterprise data platform, deployment framework,
+integration architecture, and support ecosystem developed by Innervex
+Technologies.
+
+Innervex DataCore may incorporate and utilise open-source technologies and
+database engines as part of its implementation architecture. All underlying
+open-source software components remain the property of their respective
+copyright holders and are governed by their respective licences.
+
+Innervex Technologies does not claim ownership of any third-party open-source
+projects included within the Innervex DataCore ecosystem.
+
+# 2. Performance Plan
+
+**INNERVEX® DATACORE**  
+Enterprise Data Platform & Integration Framework  
+Built on Open Standards. Engineered for Enterprise Operations.
+
+Innervex DataCore provides an enterprise data platform and integration
+framework around trusted open technologies. Performance work in this repository
 must be guided by repeatable evidence, not by guesswork or broad rewrites.
 
 ## Goals
 
-- Establish clear baseline numbers for the current DataCore engine
+- Establish clear baseline numbers for the current DataCore platform behavior
 - Improve performance for real embedded database workloads
 - Preserve Derby-compatible SQL, JDBC, transaction, locking, storage, and
   recovery behavior
@@ -414,3 +447,7 @@ ant -Ddatacore.benchmark.workload=range-scan-count datacore-embedded-benchmark
 This query returns one aggregate count per range operation, so it is useful
 for separating the cost of locating/counting matching rows from the cost of
 returning each row to the caller.
+
+---
+
+**Innervex® DataCore Documentation**
