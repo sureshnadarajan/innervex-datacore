@@ -172,6 +172,7 @@ public class _Suite extends BaseTestCase  {
         suite.addTest(LangHarnessJavaTest.suite());
         		
         suite.addTest(ResultSetsFromPreparedStatementTest.suite());
+        suite.addTest(CoveringIndexOptimizerTest.suite());
         if (!isPhoneME())
         { // Disable temporarily until CVM/phoneME is fixed.. See DERBY-4290)
         suite.addTest(OrderByAndSortAvoidance.suite());
